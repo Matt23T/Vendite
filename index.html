@@ -87,7 +87,8 @@ label {
     margin: 12px 0 6px;
 }
 
-input {
+input,
+select {
     width: 100%;
     height: 48px;
     border: 1px solid #ddd;
@@ -98,7 +99,8 @@ input {
     outline: none;
 }
 
-input:focus {
+input:focus,
+select:focus {
     border-color: #111;
     background: white;
 }
@@ -199,7 +201,7 @@ button {
 .delete-sale {
     width: auto;
     min-height: 36px;
-    margin: 0;
+    margin: 5px 0 0;
     padding: 0 12px;
     background: #f2f2f7;
     color: #d00;
@@ -217,8 +219,145 @@ button {
     display: none;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.dashboard-header .card-title {
+    margin-bottom: 0;
+}
+
+.chevron {
+    font-size: 22px;
+    color: #888;
+    transition: transform .2s ease;
+}
+
+.chevron.open {
+    transform: rotate(180deg);
+}
+
+.load-details {
+    margin-top: 15px;
+}
+
+.load-card {
+    background: #f7f7fa;
+    border-radius: 17px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.load-card:last-child {
+    margin-bottom: 0;
+}
+
+.load-name {
+    font-size: 17px;
+    font-weight: 750;
+    margin-bottom: 12px;
+}
+
+.load-date {
+    font-size: 12px;
+    color: #888;
+    margin-top: 3px;
+}
+
+.load-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.load-stat {
+    background: white;
+    border-radius: 12px;
+    padding: 11px;
+}
+
+.load-stat-label {
+    color: #777;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.load-stat-value {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.history-entry {
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.history-entry:last-child {
+    border-bottom: 0;
+}
+
+.history-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.history-name {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.history-amount {
+    font-size: 17px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.history-positive {
+    color: #111;
+}
+
+.history-negative {
+    color: #d00;
+}
+
+.history-info {
+    color: #777;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.history-date {
+    color: #999;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.detail-popup {
+    background: #f7f7fa;
+    border-radius: 15px;
+    padding: 14px;
+    margin-top: 10px;
+}
+
+.detail-popup-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
 @media (max-width: 380px) {
-    .grid {
+    .grid,
+    .load-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -229,10 +368,105 @@ button {
 
 <div class="app">
 
+    <!-- SITUAZIONE ATTUALE -->
+    <div class="card">
+
+        <div
+            class="dashboard-header clickable"
+            id="dashboardToggle"
+        >
+            <div class="card-title">
+                Situazione attuale
+            </div>
+
+            <div
+                class="chevron"
+                id="dashboardChevron"
+            >
+                ▼
+            </div>
+        </div>
+
+        <div id="dashboardContent">
+
+            <div class="big-stat">
+                <div class="label">Quantità rimanente</div>
+                <div class="value" id="remaining">0 g</div>
+            </div>
+
+            <div class="grid">
+
+                <div class="stat">
+                    <div class="stat-label">Quantità iniziale</div>
+                    <div class="stat-value" id="initialQuantity">0 g</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Quantità venduta</div>
+                    <div class="stat-value" id="soldQuantity">0 g</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Costo iniziale</div>
+                    <div class="stat-value" id="initialCost">€0,00</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Ricavi</div>
+                    <div class="stat-value" id="revenue">€0,00</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Costo / grammo</div>
+                    <div class="stat-value" id="costPerGram">€0,00</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Prezzo medio vendita</div>
+                    <div class="stat-value" id="salePerGram">€0,00</div>
+                </div>
+
+            </div>
+
+            <div class="progress-container">
+
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <div class="progress-label">
+                    <span>Venduto</span>
+                    <span id="progressText">0%</span>
+                </div>
+
+            </div>
+
+            <div
+                class="load-details hidden"
+                id="loadDetails"
+            ></div>
+
+        </div>
+
+    </div>
+
+
     <!-- NUOVA VENDITA -->
     <div class="card">
 
-        <div class="card-title">Registra vendita</div>
+        <div class="card-title">
+            Registra vendita
+        </div>
+
+        <label for="saleLoad">
+            Carico
+        </label>
+
+        <select id="saleLoad">
+            <option value="">
+                Seleziona carico
+            </option>
+        </select>
 
         <label for="saleQty">
             Quantità venduta
@@ -260,19 +494,38 @@ button {
             placeholder="Es. 35"
         >
 
-        <button class="primary" id="addSale">
+        <button
+            class="primary"
+            id="addSale"
+        >
             Aggiungi vendita
         </button>
 
-        <div class="message" id="saleMessage"></div>
+        <div
+            class="message"
+            id="saleMessage"
+        ></div>
 
     </div>
 
 
-    <!-- IMPOSTAZIONE INIZIALE -->
+    <!-- CARICO INIZIALE -->
     <div class="card">
 
-        <div class="card-title">Carico iniziale</div>
+        <div class="card-title">
+            Carico iniziale
+        </div>
+
+        <label for="initialName">
+            Nome
+        </label>
+
+        <input
+            id="initialName"
+            type="text"
+            placeholder="Es. Primo carico"
+            maxlength="50"
+        >
 
         <label for="initialQty">
             Quantità totale
@@ -300,71 +553,17 @@ button {
             placeholder="Es. 500"
         >
 
-        <button class="primary" id="saveInitial">
+        <button
+            class="primary"
+            id="saveInitial"
+        >
             Salva carico iniziale
         </button>
 
-        <div class="message" id="initialMessage"></div>
-
-    </div>
-
-
-    <!-- DASHBOARD -->
-    <div class="card">
-
-        <div class="card-title">Situazione attuale</div>
-
-        <div class="big-stat">
-            <div class="label">Quantità rimanente</div>
-            <div class="value" id="remaining">0 g</div>
-        </div>
-
-        <div class="grid">
-
-            <div class="stat">
-                <div class="stat-label">Quantità iniziale</div>
-                <div class="stat-value" id="initialQuantity">0 g</div>
-            </div>
-
-            <div class="stat">
-                <div class="stat-label">Quantità venduta</div>
-                <div class="stat-value" id="soldQuantity">0 g</div>
-            </div>
-
-            <div class="stat">
-                <div class="stat-label">Costo iniziale</div>
-                <div class="stat-value" id="initialCost">€0,00</div>
-            </div>
-
-            <div class="stat">
-                <div class="stat-label">Ricavi</div>
-                <div class="stat-value" id="revenue">€0,00</div>
-            </div>
-
-            <div class="stat">
-                <div class="stat-label">Costo / grammo</div>
-                <div class="stat-value" id="costPerGram">€0,00</div>
-            </div>
-
-            <div class="stat">
-                <div class="stat-label">Prezzo medio vendita</div>
-                <div class="stat-value" id="salePerGram">€0,00</div>
-            </div>
-
-        </div>
-
-        <div class="progress-container">
-
-            <div class="progress-bar">
-                <div class="progress" id="progress"></div>
-            </div>
-
-            <div class="progress-label">
-                <span>Venduto</span>
-                <span id="progressText">0%</span>
-            </div>
-
-        </div>
+        <div
+            class="message"
+            id="initialMessage"
+        ></div>
 
     </div>
 
@@ -372,11 +571,13 @@ button {
     <!-- STORICO -->
     <div class="card">
 
-        <div class="card-title">Storico vendite</div>
+        <div class="card-title">
+            Storico vendite
+        </div>
 
         <div id="salesList">
             <div class="empty">
-                Nessuna vendita registrata
+                Nessun movimento registrato
             </div>
         </div>
 
@@ -386,28 +587,62 @@ button {
     <!-- RISULTATO -->
     <div class="card">
 
-        <div class="card-title">Risultato</div>
+        <div class="card-title">
+            Risultato
+        </div>
 
         <div class="grid">
 
             <div class="stat">
-                <div class="stat-label">Costo della quantità venduta</div>
-                <div class="stat-value" id="soldCost">€0,00</div>
+                <div class="stat-label">
+                    Costo della quantità venduta
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="soldCost"
+                >
+                    €0,00
+                </div>
             </div>
 
             <div class="stat">
-                <div class="stat-label">Guadagno lordo</div>
-                <div class="stat-value" id="profit">€0,00</div>
+                <div class="stat-label">
+                    Guadagno lordo
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="profit"
+                >
+                    €0,00
+                </div>
             </div>
 
             <div class="stat">
-                <div class="stat-label">Margine</div>
-                <div class="stat-value" id="margin">0%</div>
+                <div class="stat-label">
+                    Margine
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="margin"
+                >
+                    0%
+                </div>
             </div>
 
             <div class="stat">
-                <div class="stat-label">Valore stimato residuo</div>
-                <div class="stat-value" id="remainingValue">€0,00</div>
+                <div class="stat-label">
+                    Valore stimato residuo
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="remainingValue"
+                >
+                    €0,00
+                </div>
             </div>
 
         </div>
@@ -415,7 +650,10 @@ button {
     </div>
 
 
-    <button class="danger" id="reset">
+    <button
+        class="danger"
+        id="reset"
+    >
         Cancella tutti i dati
     </button>
 
@@ -428,237 +666,1035 @@ button {
     const STORAGE_KEY = "tracker_v1";
 
     let data = {
-        initialQuantity: 0,
-        initialCost: 0,
-        sales: []
+        loads: []
     };
 
-    const $ = id => document.getElementById(id);
+    const $ = id =>
+        document.getElementById(id);
+
+
+    function generateId() {
+
+        return (
+            Date.now().toString(36) +
+            Math.random().toString(36).substring(2, 9)
+        );
+    }
+
 
     function loadData() {
+
         try {
-            const saved = localStorage.getItem(STORAGE_KEY);
 
-            if (saved) {
-                const parsed = JSON.parse(saved);
+            const saved =
+                localStorage.getItem(STORAGE_KEY);
 
+            if (!saved) return;
+
+            const parsed =
+                JSON.parse(saved);
+
+            if (
+                parsed &&
+                typeof parsed === "object"
+            ) {
+
+                /*
+                 * Nuovo formato
+                 */
                 if (
-                    parsed &&
-                    typeof parsed === "object" &&
-                    Array.isArray(parsed.sales)
+                    Array.isArray(parsed.loads)
                 ) {
+
                     data = parsed;
+
+                    data.loads.forEach(load => {
+
+                        if (!Array.isArray(load.sales)) {
+                            load.sales = [];
+                        }
+
+                        if (!load.id) {
+                            load.id = generateId();
+                        }
+
+                    });
+
+                    return;
+                }
+
+
+                /*
+                 * Migrazione automatica
+                 * dal vecchio formato
+                 */
+                if (
+                    "initialQuantity" in parsed ||
+                    "initialCost" in parsed
+                ) {
+
+                    const oldQuantity =
+                        number(parsed.initialQuantity);
+
+                    const oldCost =
+                        number(parsed.initialCost);
+
+                    const oldSales =
+                        Array.isArray(parsed.sales)
+                            ? parsed.sales
+                            : [];
+
+                    data = {
+                        loads: []
+                    };
+
+                    if (
+                        oldQuantity > 0 ||
+                        oldCost > 0 ||
+                        oldSales.length > 0
+                    ) {
+
+                        data.loads.push({
+
+                            id: generateId(),
+
+                            name: "Carico iniziale",
+
+                            initialQuantity:
+                                oldQuantity,
+
+                            initialCost:
+                                oldCost,
+
+                            date:
+                                new Date().toISOString(),
+
+                            sales:
+                                oldSales.map(sale => ({
+                                    id:
+                                        sale.id ||
+                                        generateId(),
+
+                                    quantity:
+                                        number(
+                                            sale.quantity
+                                        ),
+
+                                    price:
+                                        number(
+                                            sale.price
+                                        ),
+
+                                    date:
+                                        sale.date ||
+                                        new Date().toISOString()
+                                }))
+
+                        });
+
+                    }
+
+                    saveData();
                 }
             }
+
         } catch (error) {
-            console.error("Errore caricamento dati:", error);
+
+            console.error(
+                "Errore caricamento dati:",
+                error
+            );
         }
     }
 
+
     function saveData() {
+
         try {
+
             localStorage.setItem(
                 STORAGE_KEY,
                 JSON.stringify(data)
             );
+
         } catch (error) {
-            console.error("Errore salvataggio dati:", error);
+
+            console.error(
+                "Errore salvataggio dati:",
+                error
+            );
         }
     }
 
+
     function number(value) {
-        const n = parseFloat(value);
-        return Number.isFinite(n) ? n : 0;
+
+        const n =
+            parseFloat(value);
+
+        return Number.isFinite(n)
+            ? n
+            : 0;
     }
+
 
     function money(value) {
-        return new Intl.NumberFormat("it-IT", {
-            style: "currency",
-            currency: "EUR"
-        }).format(Number.isFinite(value) ? value : 0);
+
+        return new Intl.NumberFormat(
+            "it-IT",
+            {
+                style: "currency",
+                currency: "EUR"
+            }
+        ).format(
+            Number.isFinite(value)
+                ? value
+                : 0
+        );
     }
+
 
     function grams(value) {
-        const n = Number.isFinite(value) ? value : 0;
 
-        return new Intl.NumberFormat("it-IT", {
-            maximumFractionDigits: 2
-        }).format(n) + " g";
+        const n =
+            Number.isFinite(value)
+                ? value
+                : 0;
+
+        return new Intl.NumberFormat(
+            "it-IT",
+            {
+                maximumFractionDigits: 2
+            }
+        ).format(n) + " g";
     }
 
-    function update() {
 
-        const initialQuantity = number(data.initialQuantity);
-        const initialCost = number(data.initialCost);
+    function percentage(value) {
+
+        return value
+            .toFixed(1)
+            .replace(".", ",") + "%";
+    }
+
+
+    function formatDate(date) {
+
+        if (!date) return "";
+
+        const d =
+            new Date(date);
+
+        if (
+            Number.isNaN(
+                d.getTime()
+            )
+        ) {
+            return "";
+        }
+
+        return d.toLocaleDateString(
+            "it-IT",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+    }
+
+
+    function getLoadStats(load) {
+
+        const initialQuantity =
+            number(
+                load.initialQuantity
+            );
+
+        const initialCost =
+            number(
+                load.initialCost
+            );
+
+        const sales =
+            Array.isArray(load.sales)
+                ? load.sales
+                : [];
 
         let soldQuantity = 0;
         let revenue = 0;
 
-        data.sales.forEach(sale => {
-            soldQuantity += number(sale.quantity);
-            revenue += number(sale.price);
+        sales.forEach(sale => {
+
+            soldQuantity +=
+                number(sale.quantity);
+
+            revenue +=
+                number(sale.price);
         });
 
-        const remaining = Math.max(
-            0,
-            initialQuantity - soldQuantity
-        );
+
+        const remaining =
+            Math.max(
+                0,
+                initialQuantity -
+                soldQuantity
+            );
+
 
         const costPerGram =
             initialQuantity > 0
-                ? initialCost / initialQuantity
+                ? initialCost /
+                  initialQuantity
                 : 0;
+
 
         const averageSalePrice =
             soldQuantity > 0
-                ? revenue / soldQuantity
+                ? revenue /
+                  soldQuantity
                 : 0;
 
+
         const soldCost =
-            soldQuantity * costPerGram;
+            soldQuantity *
+            costPerGram;
+
 
         const profit =
-            revenue - soldCost;
+            revenue -
+            soldCost;
+
 
         const margin =
             revenue > 0
                 ? (profit / revenue) * 100
                 : 0;
 
+
         const remainingValue =
-            remaining * averageSalePrice;
+            remaining *
+            averageSalePrice;
+
+
+        return {
+            initialQuantity,
+            initialCost,
+            soldQuantity,
+            revenue,
+            remaining,
+            costPerGram,
+            averageSalePrice,
+            soldCost,
+            profit,
+            margin,
+            remainingValue
+        };
+    }
+
+
+    function getAggregateStats() {
+
+        let initialQuantity = 0;
+        let initialCost = 0;
+        let soldQuantity = 0;
+        let revenue = 0;
+        let soldCost = 0;
+        let remaining = 0;
+        let remainingValue = 0;
+
+        data.loads.forEach(load => {
+
+            const stats =
+                getLoadStats(load);
+
+            initialQuantity +=
+                stats.initialQuantity;
+
+            initialCost +=
+                stats.initialCost;
+
+            soldQuantity +=
+                stats.soldQuantity;
+
+            revenue +=
+                stats.revenue;
+
+            soldCost +=
+                stats.soldCost;
+
+            remaining +=
+                stats.remaining;
+
+            remainingValue +=
+                stats.remainingValue;
+        });
+
+
+        const costPerGram =
+            initialQuantity > 0
+                ? initialCost /
+                  initialQuantity
+                : 0;
+
+
+        const averageSalePrice =
+            soldQuantity > 0
+                ? revenue /
+                  soldQuantity
+                : 0;
+
+
+        const profit =
+            revenue -
+            soldCost;
+
+
+        const margin =
+            revenue > 0
+                ? (profit / revenue) * 100
+                : 0;
+
+
+        return {
+            initialQuantity,
+            initialCost,
+            soldQuantity,
+            revenue,
+            remaining,
+            costPerGram,
+            averageSalePrice,
+            soldCost,
+            profit,
+            margin,
+            remainingValue
+        };
+    }
+
+
+    function update() {
+
+        const stats =
+            getAggregateStats();
+
+
+        $("initialQuantity").textContent =
+            grams(stats.initialQuantity);
+
+        $("soldQuantity").textContent =
+            grams(stats.soldQuantity);
+
+        $("remaining").textContent =
+            grams(stats.remaining);
+
+        $("initialCost").textContent =
+            money(stats.initialCost);
+
+        $("revenue").textContent =
+            money(stats.revenue);
+
+        $("costPerGram").textContent =
+            money(stats.costPerGram);
+
+        $("salePerGram").textContent =
+            money(stats.averageSalePrice);
+
+        $("soldCost").textContent =
+            money(stats.soldCost);
+
+        $("profit").textContent =
+            money(stats.profit);
+
+        $("margin").textContent =
+            percentage(stats.margin);
+
+        $("remainingValue").textContent =
+            money(stats.remainingValue);
+
 
         const progress =
-            initialQuantity > 0
+            stats.initialQuantity > 0
                 ? Math.min(
                     100,
                     Math.max(
                         0,
-                        (soldQuantity / initialQuantity) * 100
+                        (
+                            stats.soldQuantity /
+                            stats.initialQuantity
+                        ) * 100
                     )
                 )
                 : 0;
 
-        $("initialQuantity").textContent =
-            grams(initialQuantity);
-
-        $("soldQuantity").textContent =
-            grams(soldQuantity);
-
-        $("remaining").textContent =
-            grams(remaining);
-
-        $("initialCost").textContent =
-            money(initialCost);
-
-        $("revenue").textContent =
-            money(revenue);
-
-        $("costPerGram").textContent =
-            money(costPerGram);
-
-        $("salePerGram").textContent =
-            money(averageSalePrice);
-
-        $("soldCost").textContent =
-            money(soldCost);
-
-        $("profit").textContent =
-            money(profit);
-
-        $("margin").textContent =
-            margin.toFixed(1).replace(".", ",") + "%";
-
-        $("remainingValue").textContent =
-            money(remainingValue);
 
         $("progress").style.width =
             progress + "%";
 
         $("progressText").textContent =
-            progress.toFixed(1).replace(".", ",") + "%";
+            percentage(progress);
 
-        renderSales();
+
+        renderLoadSelector();
+        renderLoadDetails();
+        renderHistory();
     }
 
 
-    function renderSales() {
+    function renderLoadSelector() {
 
-        const container = $("salesList");
+        const select =
+            $("saleLoad");
+
+        const currentValue =
+            select.value;
+
+        select.innerHTML =
+            '<option value="">Seleziona carico</option>';
+
+
+        data.loads.forEach(load => {
+
+            const stats =
+                getLoadStats(load);
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                load.id;
+
+            option.textContent =
+                load.name +
+                " — " +
+                grams(stats.remaining);
+
+            select.appendChild(option);
+        });
+
+
+        if (
+            data.loads.some(
+                load =>
+                    load.id === currentValue
+            )
+        ) {
+
+            select.value =
+                currentValue;
+        }
+    }
+
+
+    function renderLoadDetails() {
+
+        const container =
+            $("loadDetails");
 
         container.innerHTML = "";
 
-        if (!data.sales.length) {
+
+        if (!data.loads.length) {
 
             container.innerHTML =
-                '<div class="empty">Nessuna vendita registrata</div>';
+                '<div class="empty">Nessun carico presente</div>';
 
             return;
         }
 
-        data.sales
-            .slice()
-            .reverse()
-            .forEach((sale, reverseIndex) => {
 
-                const realIndex =
-                    data.sales.length - 1 - reverseIndex;
+        data.loads.forEach(load => {
 
-                const quantity =
-                    number(sale.quantity);
+            const stats =
+                getLoadStats(load);
 
-                const price =
-                    number(sale.price);
+            const card =
+                document.createElement("div");
 
-                const pricePerGram =
-                    quantity > 0
-                        ? price / quantity
-                        : 0;
+            card.className =
+                "load-card";
 
-                const row =
-                    document.createElement("div");
 
-                row.className = "sale";
+            card.innerHTML = `
 
-                row.innerHTML = `
-                    <div class="sale-main">
-                        <div class="sale-quantity">
-                            ${grams(quantity)}
+                <div class="load-name">
+                    ${escapeHtml(load.name)}
+
+                    <div class="load-date">
+                        Caricato il ${formatDate(load.date)}
+                    </div>
+                </div>
+
+                <div class="load-grid">
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Quantità iniziale
                         </div>
-                        <div class="sale-info">
-                            ${money(pricePerGram)} / g
+                        <div class="load-stat-value">
+                            ${grams(stats.initialQuantity)}
                         </div>
                     </div>
 
-                    <div>
-                        <div class="sale-price">
-                            ${money(price)}
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Quantità venduta
+                        </div>
+                        <div class="load-stat-value">
+                            ${grams(stats.soldQuantity)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Quantità rimanente
+                        </div>
+                        <div class="load-stat-value">
+                            ${grams(stats.remaining)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Costo iniziale
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(stats.initialCost)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Costo / grammo
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(stats.costPerGram)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Ricavi
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(stats.revenue)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Prezzo medio vendita
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(stats.averageSalePrice)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Costo venduto
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(stats.soldCost)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Guadagno lordo
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(stats.profit)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Margine
+                        </div>
+                        <div class="load-stat-value">
+                            ${percentage(stats.margin)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Valore residuo
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(stats.remainingValue)}
+                        </div>
+                    </div>
+
+                </div>
+            `;
+
+
+            container.appendChild(card);
+        });
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function getHistory() {
+
+        const history = [];
+
+
+        data.loads.forEach(load => {
+
+            history.push({
+                type: "initial",
+                id: load.id,
+                name: load.name,
+                quantity:
+                    number(load.initialQuantity),
+                price:
+                    number(load.initialCost),
+                date:
+                    load.date,
+                load
+            });
+
+
+            const sales =
+                Array.isArray(load.sales)
+                    ? load.sales
+                    : [];
+
+
+            sales.forEach(sale => {
+
+                history.push({
+                    type: "sale",
+                    id:
+                        sale.id ||
+                        generateId(),
+                    loadId:
+                        load.id,
+                    name:
+                        load.name,
+                    quantity:
+                        number(sale.quantity),
+                    price:
+                        number(sale.price),
+                    date:
+                        sale.date,
+                    sale,
+                    load
+                });
+
+            });
+
+        });
+
+
+        return history.sort(
+            (a, b) => {
+
+                const dateA =
+                    new Date(a.date).getTime();
+
+                const dateB =
+                    new Date(b.date).getTime();
+
+                return dateB - dateA;
+            }
+        );
+    }
+
+
+    function renderHistory() {
+
+        const container =
+            $("salesList");
+
+        container.innerHTML = "";
+
+
+        const history =
+            getHistory();
+
+
+        if (!history.length) {
+
+            container.innerHTML =
+                '<div class="empty">Nessun movimento registrato</div>';
+
+            return;
+        }
+
+
+        history.forEach(item => {
+
+            const row =
+                document.createElement("div");
+
+            row.className =
+                "history-entry";
+
+
+            if (item.type === "initial") {
+
+                const costPerGram =
+                    item.quantity > 0
+                        ? item.price /
+                          item.quantity
+                        : 0;
+
+
+                row.innerHTML = `
+
+                    <div class="history-top">
+
+                        <div class="history-name">
+                            ${escapeHtml(item.name)}
+                        </div>
+
+                        <div class="history-amount history-negative">
+                            −${money(item.price)}
+                        </div>
+
+                    </div>
+
+                    <div class="history-info">
+                        Carico iniziale ·
+                        ${grams(item.quantity)} ·
+                        ${money(costPerGram)} / g
+                    </div>
+
+                    <div class="history-date">
+                        ${formatDate(item.date)}
+                    </div>
+
+                    <div
+                        class="detail-popup hidden"
+                        id="detail-${item.id}"
+                    >
+
+                        <div class="detail-popup-title">
+                            Dati iniziali
+                        </div>
+
+                        <div class="load-grid">
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Quantità
+                                </div>
+                                <div class="load-stat-value">
+                                    ${grams(item.quantity)}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Costo totale
+                                </div>
+                                <div class="load-stat-value">
+                                    ${money(item.price)}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Costo / grammo
+                                </div>
+                                <div class="load-stat-value">
+                                    ${money(costPerGram)}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Data carico
+                                </div>
+                                <div class="load-stat-value">
+                                    ${formatDate(item.date)}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            } else {
+
+                const pricePerGram =
+                    item.quantity > 0
+                        ? item.price /
+                          item.quantity
+                        : 0;
+
+
+                row.innerHTML = `
+
+                    <div class="history-top">
+
+                        <div class="history-name">
+                            ${escapeHtml(item.name)}
+                        </div>
+
+                        <div class="history-amount history-positive">
+                            +${money(item.price)}
+                        </div>
+
+                    </div>
+
+                    <div class="history-info">
+                        Vendita ·
+                        ${grams(item.quantity)} ·
+                        ${money(pricePerGram)} / g
+                    </div>
+
+                    <div class="history-date">
+                        ${formatDate(item.date)}
+                    </div>
+
+                    <div
+                        class="detail-popup hidden"
+                        id="detail-${item.id}"
+                    >
+
+                        <div class="detail-popup-title">
+                            Dettagli vendita
+                        </div>
+
+                        <div class="load-grid">
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Quantità
+                                </div>
+                                <div class="load-stat-value">
+                                    ${grams(item.quantity)}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Incasso
+                                </div>
+                                <div class="load-stat-value">
+                                    ${money(item.price)}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Prezzo / grammo
+                                </div>
+                                <div class="load-stat-value">
+                                    ${money(pricePerGram)}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Data
+                                </div>
+                                <div class="load-stat-value">
+                                    ${formatDate(item.date)}
+                                </div>
+                            </div>
+
                         </div>
 
                         <button
                             class="delete-sale"
                             type="button"
-                            data-index="${realIndex}"
+                            data-load-id="${item.loadId}"
+                            data-sale-id="${item.id}"
                         >
-                            Elimina
+                            Elimina vendita
                         </button>
+
                     </div>
                 `;
+            }
 
-                container.appendChild(row);
-            });
+
+            container.appendChild(row);
+        });
     }
+
+
+    $("dashboardToggle").addEventListener(
+        "click",
+        () => {
+
+            const details =
+                $("loadDetails");
+
+            const chevron =
+                $("dashboardChevron");
+
+            const isHidden =
+                details.classList.contains(
+                    "hidden"
+                );
+
+
+            if (isHidden) {
+
+                details.classList.remove(
+                    "hidden"
+                );
+
+                chevron.classList.add(
+                    "open"
+                );
+
+            } else {
+
+                details.classList.add(
+                    "hidden"
+                );
+
+                chevron.classList.remove(
+                    "open"
+                );
+            }
+        }
+    );
 
 
     $("saveInitial").addEventListener(
         "click",
         () => {
 
+            const name =
+                $("initialName").value.trim();
+
             const quantity =
-                number($("initialQty").value);
+                number(
+                    $("initialQty").value
+                );
 
             const cost =
-                number($("initialPrice").value);
+                number(
+                    $("initialPrice").value
+                );
+
+
+            if (!name) {
+
+                $("initialMessage").textContent =
+                    "Inserisci un nome per il carico.";
+
+                return;
+            }
+
 
             if (quantity <= 0) {
 
@@ -667,6 +1703,7 @@ button {
 
                 return;
             }
+
 
             if (cost < 0) {
 
@@ -676,32 +1713,45 @@ button {
                 return;
             }
 
-            if (
-                data.sales.length > 0 &&
-                quantity < data.sales.reduce(
-                    (sum, sale) =>
-                        sum + number(sale.quantity),
-                    0
-                )
-            ) {
 
-                $("initialMessage").textContent =
-                    "La quantità iniziale non può essere inferiore a quella già venduta.";
+            const newLoad = {
 
-                return;
-            }
+                id:
+                    generateId(),
 
-            data.initialQuantity = quantity;
-            data.initialCost = cost;
+                name:
+                    name,
+
+                initialQuantity:
+                    quantity,
+
+                initialCost:
+                    cost,
+
+                date:
+                    new Date().toISOString(),
+
+                sales:
+                    []
+            };
+
+
+            data.loads.push(
+                newLoad
+            );
+
 
             saveData();
             update();
 
-            $("initialMessage").textContent =
-                "Carico iniziale salvato.";
 
+            $("initialName").value = "";
             $("initialQty").value = "";
             $("initialPrice").value = "";
+
+
+            $("initialMessage").textContent =
+                "Carico iniziale salvato.";
         }
     );
 
@@ -710,32 +1760,48 @@ button {
         "click",
         () => {
 
+            const loadId =
+                $("saleLoad").value;
+
             const quantity =
-                number($("saleQty").value);
+                number(
+                    $("saleQty").value
+                );
 
             const price =
-                number($("salePrice").value);
-
-            const soldAlready =
-                data.sales.reduce(
-                    (sum, sale) =>
-                        sum + number(sale.quantity),
-                    0
+                number(
+                    $("salePrice").value
                 );
 
-            const remaining =
-                Math.max(
-                    0,
-                    data.initialQuantity - soldAlready
-                );
 
-            if (data.initialQuantity <= 0) {
+            if (!loadId) {
 
                 $("saleMessage").textContent =
-                    "Prima inserisci il carico iniziale.";
+                    "Seleziona un carico.";
 
                 return;
             }
+
+
+            const load =
+                data.loads.find(
+                    item =>
+                        item.id === loadId
+                );
+
+
+            if (!load) {
+
+                $("saleMessage").textContent =
+                    "Carico non trovato.";
+
+                return;
+            }
+
+
+            const stats =
+                getLoadStats(load);
+
 
             if (quantity <= 0) {
 
@@ -745,13 +1811,15 @@ button {
                 return;
             }
 
-            if (quantity > remaining) {
+
+            if (quantity > stats.remaining) {
 
                 $("saleMessage").textContent =
-                    "La quantità supera quella disponibile.";
+                    "La quantità supera quella disponibile nel carico.";
 
                 return;
             }
+
 
             if (price < 0) {
 
@@ -761,17 +1829,35 @@ button {
                 return;
             }
 
-            data.sales.push({
-                quantity: quantity,
-                price: price,
-                date: new Date().toISOString()
+
+            if (!Array.isArray(load.sales)) {
+                load.sales = [];
+            }
+
+
+            load.sales.push({
+
+                id:
+                    generateId(),
+
+                quantity:
+                    quantity,
+
+                price:
+                    price,
+
+                date:
+                    new Date().toISOString()
             });
+
 
             saveData();
             update();
 
+
             $("saleQty").value = "";
             $("salePrice").value = "";
+
 
             $("saleMessage").textContent =
                 "Vendita aggiunta.";
@@ -783,32 +1869,86 @@ button {
         "click",
         event => {
 
-            const button =
-                event.target.closest(".delete-sale");
+            const entry =
+                event.target.closest(
+                    ".history-entry"
+                );
 
-            if (!button) return;
+            if (!entry) return;
 
-            const index =
-                Number(button.dataset.index);
 
-            if (
-                !Number.isInteger(index) ||
-                !data.sales[index]
-            ) {
+            const deleteButton =
+                event.target.closest(
+                    ".delete-sale"
+                );
+
+
+            if (deleteButton) {
+
+                event.stopPropagation();
+
+
+                const loadId =
+                    deleteButton.dataset.loadId;
+
+                const saleId =
+                    deleteButton.dataset.saleId;
+
+
+                const load =
+                    data.loads.find(
+                        item =>
+                            item.id === loadId
+                    );
+
+
+                if (!load) return;
+
+
+                const saleIndex =
+                    load.sales.findIndex(
+                        sale =>
+                            sale.id === saleId
+                    );
+
+
+                if (saleIndex < 0) return;
+
+
+                const confirmed =
+                    confirm(
+                        "Vuoi eliminare questa vendita?"
+                    );
+
+
+                if (!confirmed) return;
+
+
+                load.sales.splice(
+                    saleIndex,
+                    1
+                );
+
+
+                saveData();
+                update();
+
                 return;
             }
 
-            const confirmed =
-                confirm(
-                    "Vuoi eliminare questa vendita?"
+
+            const detail =
+                entry.querySelector(
+                    ".detail-popup"
                 );
 
-            if (!confirmed) return;
 
-            data.sales.splice(index, 1);
+            if (!detail) return;
 
-            saveData();
-            update();
+
+            detail.classList.toggle(
+                "hidden"
+            );
         }
     );
 
@@ -822,25 +1962,42 @@ button {
                     "Vuoi cancellare TUTTI i dati? Questa operazione non può essere annullata."
                 );
 
+
             if (!confirmed) return;
 
+
             data = {
-                initialQuantity: 0,
-                initialCost: 0,
-                sales: []
+                loads: []
             };
+
 
             saveData();
 
+
+            $("initialName").value = "";
             $("initialQty").value = "";
             $("initialPrice").value = "";
+
             $("saleQty").value = "";
             $("salePrice").value = "";
 
-            $("initialMessage").textContent = "";
-            $("saleMessage").textContent = "";
+            $("initialMessage").textContent =
+                "";
+
+            $("saleMessage").textContent =
+                "";
+
 
             update();
+
+
+            $("loadDetails").classList.add(
+                "hidden"
+            );
+
+            $("dashboardChevron").classList.remove(
+                "open"
+            );
         }
     );
 
