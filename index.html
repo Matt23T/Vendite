@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tracker</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Arial, sans-serif;
+    background: #f2f2f7;
+    color: #111;
+}
+
+.app {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px 16px 40px;
+}
+
+h1 {
+    font-size: 32px;
+    margin: 10px 0 4px;
+}
+
+.subtitle {
+    color: #777;
+    font-size: 15px;
+    margin-bottom: 22px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.stat {
+    background: #f7f7fa;
+    border-radius: 15px;
+    padding: 14px;
+}
+
+.stat-label {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.big-stat {
+    background: #111;
+    color: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 10px;
+}
+
+.big-stat .label {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.big-stat .value {
+    font-size: 31px;
+    font-weight: 800;
+    margin-top: 5px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin: 12px 0 6px;
+}
+
+input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #ddd;
+    border-radius: 13px;
+    padding: 0 13px;
+    font-size: 17px;
+    background: #fafafa;
+    outline: none;
+}
+
+input:focus {
+    border-color: #111;
+    background: white;
+}
+
+button {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 14px;
+}
+
+.primary {
+    background: #111;
+    color: white;
+}
+
+.secondary {
+    background: #eee;
+    color: #111;
+}
+
+.danger {
+    background: #ffe5e5;
+    color: #d00;
+}
+
+.message {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.progress-container {
+    margin-top: 15px;
+}
+
+.progress-bar {
+    height: 12px;
+    background: #e5e5e5;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #111;
+    border-radius: 20px;
+    transition: width .25s ease;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #777;
+    margin-top: 6px;
+}
+
+.sale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.sale:last-child {
+    border-bottom: 0;
+}
+
+.sale-main {
+    min-width: 0;
+}
+
+.sale-quantity {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.sale-info {
+    color: #777;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.sale-price {
+    text-align: right;
+    font-weight: 700;
+}
+
+.delete-sale {
+    width: auto;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 12px;
+    background: #f2f2f7;
+    color: #d00;
+    font-size: 13px;
+}
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 15px 0;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 380px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>Tracker</h1>
+    <div class="subtitle">
+        Quantità, costi, vendite e margine
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="card">
+
+        <div class="card-title">Situazione attuale</div>
+
+        <div class="big-stat">
+            <div class="label">Quantità rimanente</div>
+            <div class="value" id="remaining">0 g</div>
+        </div>
+
+        <div class="grid">
+
+            <div class="stat">
+                <div class="stat-label">Quantità iniziale</div>
+                <div class="stat-value" id="initialQuantity">0 g</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Quantità venduta</div>
+                <div class="stat-value" id="soldQuantity">0 g</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Costo iniziale</div>
+                <div class="stat-value" id="initialCost">€0,00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Ricavi</div>
+                <div class="stat-value" id="revenue">€0,00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Costo / grammo</div>
+                <div class="stat-value" id="costPerGram">€0,00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Prezzo medio vendita</div>
+                <div class="stat-value" id="salePerGram">€0,00</div>
+            </div>
+
+        </div>
+
+        <div class="progress-container">
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <div class="progress-label">
+                <span>Venduto</span>
+                <span id="progressText">0%</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- IMPOSTAZIONE INIZIALE -->
+    <div class="card">
+
+        <div class="card-title">Carico iniziale</div>
+
+        <label for="initialQty">
+            Quantità totale
+        </label>
+
+        <input
+            id="initialQty"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.01"
+            placeholder="Es. 1000"
+        >
+
+        <label for="initialPrice">
+            Costo totale
+        </label>
+
+        <input
+            id="initialPrice"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.01"
+            placeholder="Es. 500"
+        >
+
+        <button class="primary" id="saveInitial">
+            Salva carico iniziale
+        </button>
+
+        <div class="message" id="initialMessage"></div>
+
+    </div>
+
+
+    <!-- NUOVA VENDITA -->
+    <div class="card">
+
+        <div class="card-title">Registra vendita</div>
+
+        <label for="saleQty">
+            Quantità venduta
+        </label>
+
+        <input
+            id="saleQty"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.01"
+            placeholder="Es. 50"
+        >
+
+        <label for="salePrice">
+            Prezzo incassato
+        </label>
+
+        <input
+            id="salePrice"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.01"
+            placeholder="Es. 35"
+        >
+
+        <button class="primary" id="addSale">
+            Aggiungi vendita
+        </button>
+
+        <div class="message" id="saleMessage"></div>
+
+    </div>
+
+
+    <!-- STORICO -->
+    <div class="card">
+
+        <div class="card-title">Storico vendite</div>
+
+        <div id="salesList">
+            <div class="empty">
+                Nessuna vendita registrata
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- RISULTATO -->
+    <div class="card">
+
+        <div class="card-title">Risultato</div>
+
+        <div class="grid">
+
+            <div class="stat">
+                <div class="stat-label">Costo della quantità venduta</div>
+                <div class="stat-value" id="soldCost">€0,00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Guadagno lordo</div>
+                <div class="stat-value" id="profit">€0,00</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Margine</div>
+                <div class="stat-value" id="margin">0%</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Valore stimato residuo</div>
+                <div class="stat-value" id="remainingValue">€0,00</div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button class="danger" id="reset">
+        Cancella tutti i dati
+    </button>
+
+</div>
+
+
+<script>
+(() => {
+
+    const STORAGE_KEY = "tracker_v1";
+
+    let data = {
+        initialQuantity: 0,
+        initialCost: 0,
+        sales: []
+    };
+
+    const $ = id => document.getElementById(id);
+
+    function loadData() {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+
+            if (saved) {
+                const parsed = JSON.parse(saved);
+
+                if (
+                    parsed &&
+                    typeof parsed === "object" &&
+                    Array.isArray(parsed.sales)
+                ) {
+                    data = parsed;
+                }
+            }
+        } catch (error) {
+            console.error("Errore caricamento dati:", error);
+        }
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(data)
+            );
+        } catch (error) {
+            console.error("Errore salvataggio dati:", error);
+        }
+    }
+
+    function number(value) {
+        const n = parseFloat(value);
+        return Number.isFinite(n) ? n : 0;
+    }
+
+    function money(value) {
+        return new Intl.NumberFormat("it-IT", {
+            style: "currency",
+            currency: "EUR"
+        }).format(Number.isFinite(value) ? value : 0);
+    }
+
+    function grams(value) {
+        const n = Number.isFinite(value) ? value : 0;
+
+        return new Intl.NumberFormat("it-IT", {
+            maximumFractionDigits: 2
+        }).format(n) + " g";
+    }
+
+    function update() {
+
+        const initialQuantity = number(data.initialQuantity);
+        const initialCost = number(data.initialCost);
+
+        let soldQuantity = 0;
+        let revenue = 0;
+
+        data.sales.forEach(sale => {
+            soldQuantity += number(sale.quantity);
+            revenue += number(sale.price);
+        });
+
+        const remaining = Math.max(
+            0,
+            initialQuantity - soldQuantity
+        );
+
+        const costPerGram =
+            initialQuantity > 0
+                ? initialCost / initialQuantity
+                : 0;
+
+        const averageSalePrice =
+            soldQuantity > 0
+                ? revenue / soldQuantity
+                : 0;
+
+        const soldCost =
+            soldQuantity * costPerGram;
+
+        const profit =
+            revenue - soldCost;
+
+        const margin =
+            revenue > 0
+                ? (profit / revenue) * 100
+                : 0;
+
+        const remainingValue =
+            remaining * averageSalePrice;
+
+        const progress =
+            initialQuantity > 0
+                ? Math.min(
+                    100,
+                    Math.max(
+                        0,
+                        (soldQuantity / initialQuantity) * 100
+                    )
+                )
+                : 0;
+
+        $("initialQuantity").textContent =
+            grams(initialQuantity);
+
+        $("soldQuantity").textContent =
+            grams(soldQuantity);
+
+        $("remaining").textContent =
+            grams(remaining);
+
+        $("initialCost").textContent =
+            money(initialCost);
+
+        $("revenue").textContent =
+            money(revenue);
+
+        $("costPerGram").textContent =
+            money(costPerGram);
+
+        $("salePerGram").textContent =
+            money(averageSalePrice);
+
+        $("soldCost").textContent =
+            money(soldCost);
+
+        $("profit").textContent =
+            money(profit);
+
+        $("margin").textContent =
+            margin.toFixed(1).replace(".", ",") + "%";
+
+        $("remainingValue").textContent =
+            money(remainingValue);
+
+        $("progress").style.width =
+            progress + "%";
+
+        $("progressText").textContent =
+            progress.toFixed(1).replace(".", ",") + "%";
+
+        renderSales();
+    }
+
+
+    function renderSales() {
+
+        const container = $("salesList");
+
+        container.innerHTML = "";
+
+        if (!data.sales.length) {
+
+            container.innerHTML =
+                '<div class="empty">Nessuna vendita registrata</div>';
+
+            return;
+        }
+
+        data.sales
+            .slice()
+            .reverse()
+            .forEach((sale, reverseIndex) => {
+
+                const realIndex =
+                    data.sales.length - 1 - reverseIndex;
+
+                const quantity =
+                    number(sale.quantity);
+
+                const price =
+                    number(sale.price);
+
+                const pricePerGram =
+                    quantity > 0
+                        ? price / quantity
+                        : 0;
+
+                const row =
+                    document.createElement("div");
+
+                row.className = "sale";
+
+                row.innerHTML = `
+                    <div class="sale-main">
+                        <div class="sale-quantity">
+                            ${grams(quantity)}
+                        </div>
+                        <div class="sale-info">
+                            ${money(pricePerGram)} / g
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="sale-price">
+                            ${money(price)}
+                        </div>
+
+                        <button
+                            class="delete-sale"
+                            type="button"
+                            data-index="${realIndex}"
+                        >
+                            Elimina
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(row);
+            });
+    }
+
+
+    $("saveInitial").addEventListener(
+        "click",
+        () => {
+
+            const quantity =
+                number($("initialQty").value);
+
+            const cost =
+                number($("initialPrice").value);
+
+            if (quantity <= 0) {
+
+                $("initialMessage").textContent =
+                    "Inserisci una quantità valida.";
+
+                return;
+            }
+
+            if (cost < 0) {
+
+                $("initialMessage").textContent =
+                    "Inserisci un costo valido.";
+
+                return;
+            }
+
+            if (
+                data.sales.length > 0 &&
+                quantity < data.sales.reduce(
+                    (sum, sale) =>
+                        sum + number(sale.quantity),
+                    0
+                )
+            ) {
+
+                $("initialMessage").textContent =
+                    "La quantità iniziale non può essere inferiore a quella già venduta.";
+
+                return;
+            }
+
+            data.initialQuantity = quantity;
+            data.initialCost = cost;
+
+            saveData();
+            update();
+
+            $("initialMessage").textContent =
+                "Carico iniziale salvato.";
+
+            $("initialQty").value = "";
+            $("initialPrice").value = "";
+        }
+    );
+
+
+    $("addSale").addEventListener(
+        "click",
+        () => {
+
+            const quantity =
+                number($("saleQty").value);
+
+            const price =
+                number($("salePrice").value);
+
+            const soldAlready =
+                data.sales.reduce(
+                    (sum, sale) =>
+                        sum + number(sale.quantity),
+                    0
+                );
+
+            const remaining =
+                Math.max(
+                    0,
+                    data.initialQuantity - soldAlready
+                );
+
+            if (data.initialQuantity <= 0) {
+
+                $("saleMessage").textContent =
+                    "Prima inserisci il carico iniziale.";
+
+                return;
+            }
+
+            if (quantity <= 0) {
+
+                $("saleMessage").textContent =
+                    "Inserisci una quantità valida.";
+
+                return;
+            }
+
+            if (quantity > remaining) {
+
+                $("saleMessage").textContent =
+                    "La quantità supera quella disponibile.";
+
+                return;
+            }
+
+            if (price < 0) {
+
+                $("saleMessage").textContent =
+                    "Inserisci un prezzo valido.";
+
+                return;
+            }
+
+            data.sales.push({
+                quantity: quantity,
+                price: price,
+                date: new Date().toISOString()
+            });
+
+            saveData();
+            update();
+
+            $("saleQty").value = "";
+            $("salePrice").value = "";
+
+            $("saleMessage").textContent =
+                "Vendita aggiunta.";
+        }
+    );
+
+
+    $("salesList").addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(".delete-sale");
+
+            if (!button) return;
+
+            const index =
+                Number(button.dataset.index);
+
+            if (
+                !Number.isInteger(index) ||
+                !data.sales[index]
+            ) {
+                return;
+            }
+
+            const confirmed =
+                confirm(
+                    "Vuoi eliminare questa vendita?"
+                );
+
+            if (!confirmed) return;
+
+            data.sales.splice(index, 1);
+
+            saveData();
+            update();
+        }
+    );
+
+
+    $("reset").addEventListener(
+        "click",
+        () => {
+
+            const confirmed =
+                confirm(
+                    "Vuoi cancellare TUTTI i dati? Questa operazione non può essere annullata."
+                );
+
+            if (!confirmed) return;
+
+            data = {
+                initialQuantity: 0,
+                initialCost: 0,
+                sales: []
+            };
+
+            saveData();
+
+            $("initialQty").value = "";
+            $("initialPrice").value = "";
+            $("saleQty").value = "";
+            $("salePrice").value = "";
+
+            $("initialMessage").textContent = "";
+            $("saleMessage").textContent = "";
+
+            update();
+        }
+    );
+
+
+    loadData();
+    update();
+
+})();
+</script>
+
+</body>
+</html>
