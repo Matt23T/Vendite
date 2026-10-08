@@ -165,49 +165,6 @@ button {
     margin-top: 6px;
 }
 
-.sale {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 13px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.sale:last-child {
-    border-bottom: 0;
-}
-
-.sale-main {
-    min-width: 0;
-}
-
-.sale-quantity {
-    font-size: 17px;
-    font-weight: 700;
-}
-
-.sale-info {
-    color: #777;
-    font-size: 13px;
-    margin-top: 3px;
-}
-
-.sale-price {
-    text-align: right;
-    font-weight: 700;
-}
-
-.delete-sale {
-    width: auto;
-    min-height: 36px;
-    margin: 5px 0 0;
-    padding: 0 12px;
-    background: #f2f2f7;
-    color: #d00;
-    font-size: 13px;
-}
-
 .empty {
     text-align: center;
     color: #888;
@@ -355,6 +312,16 @@ button {
     margin-bottom: 10px;
 }
 
+.delete-sale {
+    width: auto;
+    min-height: 36px;
+    margin: 10px 0 0;
+    padding: 0 12px;
+    background: #f2f2f7;
+    color: #d00;
+    font-size: 13px;
+}
+
 @media (max-width: 380px) {
     .grid,
     .load-grid {
@@ -451,7 +418,7 @@ button {
     </div>
 
 
-    <!-- NUOVA VENDITA -->
+    <!-- REGISTRA VENDITA -->
     <div class="card">
 
         <div class="card-title">
@@ -467,6 +434,17 @@ button {
                 Seleziona carico
             </option>
         </select>
+
+        <label for="buyerName">
+            Nome acquirente
+        </label>
+
+        <input
+            id="buyerName"
+            type="text"
+            placeholder="Es. Mario"
+            maxlength="80"
+        >
 
         <label for="saleQty">
             Quantità venduta
@@ -700,7 +678,7 @@ button {
             ) {
 
                 /*
-                 * Nuovo formato
+                 * NUOVO FORMATO
                  */
                 if (
                     Array.isArray(parsed.loads)
@@ -718,6 +696,25 @@ button {
                             load.id = generateId();
                         }
 
+                        /*
+                         * Compatibilità con eventuali
+                         * vendite create prima dell'aggiunta
+                         * del nome acquirente.
+                         */
+                        load.sales.forEach(sale => {
+
+                            if (
+                                typeof sale.buyerName !== "string"
+                            ) {
+                                sale.buyerName = "";
+                            }
+
+                            if (!sale.id) {
+                                sale.id = generateId();
+                            }
+
+                        });
+
                     });
 
                     return;
@@ -725,8 +722,7 @@ button {
 
 
                 /*
-                 * Migrazione automatica
-                 * dal vecchio formato
+                 * MIGRAZIONE DAL VECCHIO FORMATO
                  */
                 if (
                     "initialQuantity" in parsed ||
@@ -734,19 +730,25 @@ button {
                 ) {
 
                     const oldQuantity =
-                        number(parsed.initialQuantity);
+                        number(
+                            parsed.initialQuantity
+                        );
 
                     const oldCost =
-                        number(parsed.initialCost);
+                        number(
+                            parsed.initialCost
+                        );
 
                     const oldSales =
                         Array.isArray(parsed.sales)
                             ? parsed.sales
                             : [];
 
+
                     data = {
                         loads: []
                     };
+
 
                     if (
                         oldQuantity > 0 ||
@@ -756,9 +758,11 @@ button {
 
                         data.loads.push({
 
-                            id: generateId(),
+                            id:
+                                generateId(),
 
-                            name: "Carico iniziale",
+                            name:
+                                "Carico iniziale",
 
                             initialQuantity:
                                 oldQuantity,
@@ -771,9 +775,15 @@ button {
 
                             sales:
                                 oldSales.map(sale => ({
+
                                     id:
                                         sale.id ||
                                         generateId(),
+
+                                    buyerName:
+                                        typeof sale.buyerName === "string"
+                                            ? sale.buyerName
+                                            : "",
 
                                     quantity:
                                         number(
@@ -921,8 +931,10 @@ button {
                 ? load.sales
                 : [];
 
+
         let soldQuantity = 0;
         let revenue = 0;
+
 
         sales.forEach(sale => {
 
@@ -1002,6 +1014,7 @@ button {
         let soldCost = 0;
         let remaining = 0;
         let remainingValue = 0;
+
 
         data.loads.forEach(load => {
 
@@ -1108,6 +1121,7 @@ button {
         $("margin").textContent =
             percentage(stats.margin);
 
+
         $("remainingValue").textContent =
             money(stats.remainingValue);
 
@@ -1130,6 +1144,7 @@ button {
         $("progress").style.width =
             progress + "%";
 
+
         $("progressText").textContent =
             percentage(progress);
 
@@ -1148,6 +1163,7 @@ button {
         const currentValue =
             select.value;
 
+
         select.innerHTML =
             '<option value="">Seleziona carico</option>';
 
@@ -1157,16 +1173,20 @@ button {
             const stats =
                 getLoadStats(load);
 
+
             const option =
                 document.createElement("option");
 
+
             option.value =
                 load.id;
+
 
             option.textContent =
                 load.name +
                 " — " +
                 grams(stats.remaining);
+
 
             select.appendChild(option);
         });
@@ -1190,6 +1210,7 @@ button {
         const container =
             $("loadDetails");
 
+
         container.innerHTML = "";
 
 
@@ -1207,8 +1228,10 @@ button {
             const stats =
                 getLoadStats(load);
 
+
             const card =
                 document.createElement("div");
+
 
             card.className =
                 "load-card";
@@ -1217,11 +1240,13 @@ button {
             card.innerHTML = `
 
                 <div class="load-name">
+
                     ${escapeHtml(load.name)}
 
                     <div class="load-date">
                         Caricato il ${formatDate(load.date)}
                     </div>
+
                 </div>
 
                 <div class="load-grid">
@@ -1353,16 +1378,32 @@ button {
         data.loads.forEach(load => {
 
             history.push({
-                type: "initial",
-                id: load.id,
-                name: load.name,
+
+                type:
+                    "initial",
+
+                id:
+                    load.id,
+
+                name:
+                    load.name,
+
                 quantity:
-                    number(load.initialQuantity),
+                    number(
+                        load.initialQuantity
+                    ),
+
                 price:
-                    number(load.initialCost),
+                    number(
+                        load.initialCost
+                    ),
+
                 date:
                     load.date,
-                load
+
+                load:
+                    load
+
             });
 
 
@@ -1375,22 +1416,44 @@ button {
             sales.forEach(sale => {
 
                 history.push({
-                    type: "sale",
+
+                    type:
+                        "sale",
+
                     id:
                         sale.id ||
                         generateId(),
+
                     loadId:
                         load.id,
+
                     name:
                         load.name,
+
+                    buyerName:
+                        typeof sale.buyerName === "string"
+                            ? sale.buyerName
+                            : "",
+
                     quantity:
-                        number(sale.quantity),
+                        number(
+                            sale.quantity
+                        ),
+
                     price:
-                        number(sale.price),
+                        number(
+                            sale.price
+                        ),
+
                     date:
                         sale.date,
-                    sale,
-                    load
+
+                    sale:
+                        sale,
+
+                    load:
+                        load
+
                 });
 
             });
@@ -1418,6 +1481,7 @@ button {
         const container =
             $("salesList");
 
+
         container.innerHTML = "";
 
 
@@ -1438,6 +1502,7 @@ button {
 
             const row =
                 document.createElement("div");
+
 
             row.className =
                 "history-entry";
@@ -1478,7 +1543,6 @@ button {
 
                     <div
                         class="detail-popup hidden"
-                        id="detail-${item.id}"
                     >
 
                         <div class="detail-popup-title">
@@ -1537,12 +1601,18 @@ button {
                         : 0;
 
 
+                const buyerText =
+                    item.buyerName
+                        ? escapeHtml(item.buyerName)
+                        : "Acquirente non specificato";
+
+
                 row.innerHTML = `
 
                     <div class="history-top">
 
                         <div class="history-name">
-                            ${escapeHtml(item.name)}
+                            ${buyerText}
                         </div>
 
                         <div class="history-amount history-positive">
@@ -1552,7 +1622,7 @@ button {
                     </div>
 
                     <div class="history-info">
-                        Vendita ·
+                        ${escapeHtml(item.name)} ·
                         ${grams(item.quantity)} ·
                         ${money(pricePerGram)} / g
                     </div>
@@ -1563,7 +1633,6 @@ button {
 
                     <div
                         class="detail-popup hidden"
-                        id="detail-${item.id}"
                     >
 
                         <div class="detail-popup-title">
@@ -1571,6 +1640,24 @@ button {
                         </div>
 
                         <div class="load-grid">
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Acquirente
+                                </div>
+                                <div class="load-stat-value">
+                                    ${buyerText}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
+                                <div class="load-stat-label">
+                                    Carico
+                                </div>
+                                <div class="load-stat-value">
+                                    ${escapeHtml(item.name)}
+                                </div>
+                            </div>
 
                             <div class="load-stat">
                                 <div class="load-stat-label">
@@ -1638,6 +1725,7 @@ button {
 
             const chevron =
                 $("dashboardChevron");
+
 
             const isHidden =
                 details.classList.contains(
@@ -1763,6 +1851,9 @@ button {
             const loadId =
                 $("saleLoad").value;
 
+            const buyerName =
+                $("buyerName").value.trim();
+
             const quantity =
                 number(
                     $("saleQty").value
@@ -1778,6 +1869,15 @@ button {
 
                 $("saleMessage").textContent =
                     "Seleziona un carico.";
+
+                return;
+            }
+
+
+            if (!buyerName) {
+
+                $("saleMessage").textContent =
+                    "Inserisci il nome dell'acquirente.";
 
                 return;
             }
@@ -1840,6 +1940,9 @@ button {
                 id:
                     generateId(),
 
+                buyerName:
+                    buyerName,
+
                 quantity:
                     quantity,
 
@@ -1855,6 +1958,7 @@ button {
             update();
 
 
+            $("buyerName").value = "";
             $("saleQty").value = "";
             $("salePrice").value = "";
 
@@ -1873,6 +1977,7 @@ button {
                 event.target.closest(
                     ".history-entry"
                 );
+
 
             if (!entry) return;
 
@@ -1978,8 +2083,10 @@ button {
             $("initialQty").value = "";
             $("initialPrice").value = "";
 
+            $("buyerName").value = "";
             $("saleQty").value = "";
             $("salePrice").value = "";
+
 
             $("initialMessage").textContent =
                 "";
