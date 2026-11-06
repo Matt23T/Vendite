@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -21,6 +22,48 @@ body {
     max-width: 600px;
     margin: auto;
     padding: 20px 16px 40px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.settings-button {
+    width: 44px;
+    min-height: 44px;
+    margin: 0;
+    border-radius: 14px;
+    background: white;
+    font-size: 23px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+
+.settings-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    z-index: 10;
+    width: 190px;
+    padding: 7px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.15);
+}
+
+.settings-menu button {
+    margin: 0;
+    min-height: 44px;
+    background: white;
+    text-align: left;
+    padding: 0 12px;
+    font-size: 15px;
+}
+
+.settings-menu button + button {
+    border-top: 1px solid #eee;
 }
 
 .card {
@@ -322,6 +365,76 @@ button {
     font-size: 13px;
 }
 
+.edit-button {
+    width: auto;
+    min-height: 36px;
+    margin: 10px 6px 0 0;
+    padding: 0 13px;
+    background: #e8e8ed;
+    color: #111;
+    font-size: 13px;
+}
+
+.paid-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #555;
+}
+
+.paid-row input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: #111;
+}
+
+.owed {
+    color: #d00;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+.history-total {
+    background: #f7f7fa;
+    border-radius: 13px;
+    padding: 13px;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+.creditor-card {
+    background: #f7f7fa;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.creditor-name {
+    font-size: 17px;
+    font-weight: 750;
+    margin-bottom: 10px;
+}
+
+.creditor-debt {
+    color: #d00;
+    font-size: 20px;
+    font-weight: 800;
+    margin-top: 10px;
+}
+
+.edit-mode {
+    color: #3978e8;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 3px;
+}
+
 @media (max-width: 380px) {
     .grid,
     .load-grid {
@@ -334,6 +447,31 @@ button {
 <body>
 
 <div class="app">
+
+    <!-- IMPOSTAZIONI -->
+    <div class="topbar">
+
+        <button
+            class="settings-button"
+            id="settingsButton"
+            type="button"
+        >⚙️</button>
+
+        <div
+            class="settings-menu hidden"
+            id="settingsMenu"
+        >
+            <button id="editModeButton" type="button">
+                Modifica
+            </button>
+
+            <button id="creditorsButton" type="button">
+                Lista creditori
+            </button>
+        </div>
+
+    </div>
+
 
     <!-- SITUAZIONE ATTUALE -->
     <div class="card">
@@ -425,19 +563,13 @@ button {
             Registra vendita
         </div>
 
-        <label for="saleLoad">
-            Carico
-        </label>
+        <label for="saleLoad">Carico</label>
 
         <select id="saleLoad">
-            <option value="">
-                Seleziona carico
-            </option>
+            <option value="">Seleziona carico</option>
         </select>
 
-        <label for="buyerName">
-            Nome acquirente
-        </label>
+        <label for="buyerName">Nome acquirente</label>
 
         <input
             id="buyerName"
@@ -446,9 +578,7 @@ button {
             maxlength="80"
         >
 
-        <label for="saleQty">
-            Quantità venduta
-        </label>
+        <label for="saleQty">Quantità venduta</label>
 
         <input
             id="saleQty"
@@ -459,9 +589,7 @@ button {
             placeholder="Es. 50"
         >
 
-        <label for="salePrice">
-            Prezzo incassato
-        </label>
+        <label for="salePrice">Prezzo incassato</label>
 
         <input
             id="salePrice"
@@ -472,17 +600,11 @@ button {
             placeholder="Es. 35"
         >
 
-        <button
-            class="primary"
-            id="addSale"
-        >
+        <button class="primary" id="addSale">
             Aggiungi vendita
         </button>
 
-        <div
-            class="message"
-            id="saleMessage"
-        ></div>
+        <div class="message" id="saleMessage"></div>
 
     </div>
 
@@ -494,9 +616,7 @@ button {
             Carico iniziale
         </div>
 
-        <label for="initialName">
-            Nome
-        </label>
+        <label for="initialName">Nome</label>
 
         <input
             id="initialName"
@@ -505,9 +625,7 @@ button {
             maxlength="50"
         >
 
-        <label for="initialQty">
-            Quantità totale
-        </label>
+        <label for="initialQty">Quantità totale</label>
 
         <input
             id="initialQty"
@@ -518,9 +636,7 @@ button {
             placeholder="Es. 1000"
         >
 
-        <label for="initialPrice">
-            Costo totale
-        </label>
+        <label for="initialPrice">Costo totale</label>
 
         <input
             id="initialPrice"
@@ -531,17 +647,11 @@ button {
             placeholder="Es. 500"
         >
 
-        <button
-            class="primary"
-            id="saveInitial"
-        >
+        <button class="primary" id="saveInitial">
             Salva carico iniziale
         </button>
 
-        <div
-            class="message"
-            id="initialMessage"
-        ></div>
+        <div class="message" id="initialMessage"></div>
 
     </div>
 
@@ -559,6 +669,28 @@ button {
             </div>
         </div>
 
+        <div id="historyTotal"></div>
+
+    </div>
+
+
+    <!-- CREDITORI -->
+    <div class="card hidden" id="creditorPanel">
+
+        <div class="dashboard-header">
+            <div class="card-title">
+                Lista creditori
+            </div>
+
+            <div
+                class="clickable"
+                id="closeCreditors"
+                style="font-size:22px;color:#888"
+            >✕</div>
+        </div>
+
+        <div id="creditorsList"></div>
+
     </div>
 
 
@@ -575,52 +707,26 @@ button {
                 <div class="stat-label">
                     Costo della quantità venduta
                 </div>
-
-                <div
-                    class="stat-value"
-                    id="soldCost"
-                >
-                    €0,00
-                </div>
+                <div class="stat-value" id="soldCost">€0,00</div>
             </div>
 
             <div class="stat">
                 <div class="stat-label">
                     Guadagno lordo
                 </div>
-
-                <div
-                    class="stat-value"
-                    id="profit"
-                >
-                    €0,00
-                </div>
+                <div class="stat-value" id="profit">€0,00</div>
             </div>
 
             <div class="stat">
-                <div class="stat-label">
-                    Margine
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="margin"
-                >
-                    0%
-                </div>
+                <div class="stat-label">Margine</div>
+                <div class="stat-value" id="margin">0%</div>
             </div>
 
             <div class="stat">
                 <div class="stat-label">
                     Valore stimato residuo
                 </div>
-
-                <div
-                    class="stat-value"
-                    id="remainingValue"
-                >
-                    €0,00
-                </div>
+                <div class="stat-value" id="remainingValue">€0,00</div>
             </div>
 
         </div>
@@ -628,10 +734,7 @@ button {
     </div>
 
 
-    <button
-        class="danger"
-        id="reset"
-    >
+    <button class="danger" id="reset">
         Cancella tutti i dati
     </button>
 
@@ -646,6 +749,8 @@ button {
     let data = {
         loads: []
     };
+
+    let editMode = false;
 
     const $ = id =>
         document.getElementById(id);
@@ -677,12 +782,7 @@ button {
                 typeof parsed === "object"
             ) {
 
-                /*
-                 * NUOVO FORMATO
-                 */
-                if (
-                    Array.isArray(parsed.loads)
-                ) {
+                if (Array.isArray(parsed.loads)) {
 
                     data = parsed;
 
@@ -696,21 +796,18 @@ button {
                             load.id = generateId();
                         }
 
-                        /*
-                         * Compatibilità con eventuali
-                         * vendite create prima dell'aggiunta
-                         * del nome acquirente.
-                         */
                         load.sales.forEach(sale => {
 
-                            if (
-                                typeof sale.buyerName !== "string"
-                            ) {
+                            if (typeof sale.buyerName !== "string") {
                                 sale.buyerName = "";
                             }
 
                             if (!sale.id) {
                                 sale.id = generateId();
+                            }
+
+                            if (typeof sale.paid !== "boolean") {
+                                sale.paid = false;
                             }
 
                         });
@@ -721,34 +818,25 @@ button {
                 }
 
 
-                /*
-                 * MIGRAZIONE DAL VECCHIO FORMATO
-                 */
                 if (
                     "initialQuantity" in parsed ||
                     "initialCost" in parsed
                 ) {
 
                     const oldQuantity =
-                        number(
-                            parsed.initialQuantity
-                        );
+                        number(parsed.initialQuantity);
 
                     const oldCost =
-                        number(
-                            parsed.initialCost
-                        );
+                        number(parsed.initialCost);
 
                     const oldSales =
                         Array.isArray(parsed.sales)
                             ? parsed.sales
                             : [];
 
-
                     data = {
                         loads: []
                     };
-
 
                     if (
                         oldQuantity > 0 ||
@@ -758,47 +846,33 @@ button {
 
                         data.loads.push({
 
-                            id:
-                                generateId(),
+                            id: generateId(),
 
-                            name:
-                                "Carico iniziale",
+                            name: "Carico iniziale",
 
-                            initialQuantity:
-                                oldQuantity,
+                            initialQuantity: oldQuantity,
 
-                            initialCost:
-                                oldCost,
+                            initialCost: oldCost,
 
-                            date:
-                                new Date().toISOString(),
+                            date: new Date().toISOString(),
 
-                            sales:
-                                oldSales.map(sale => ({
+                            sales: oldSales.map(sale => ({
 
-                                    id:
-                                        sale.id ||
-                                        generateId(),
+                                id: sale.id || generateId(),
 
-                                    buyerName:
-                                        typeof sale.buyerName === "string"
-                                            ? sale.buyerName
-                                            : "",
+                                buyerName:
+                                    typeof sale.buyerName === "string"
+                                        ? sale.buyerName
+                                        : "",
 
-                                    quantity:
-                                        number(
-                                            sale.quantity
-                                        ),
+                                quantity: number(sale.quantity),
 
-                                    price:
-                                        number(
-                                            sale.price
-                                        ),
+                                price: number(sale.price),
 
-                                    date:
-                                        sale.date ||
-                                        new Date().toISOString()
-                                }))
+                                date: sale.date || new Date().toISOString(),
+
+                                paid: Boolean(sale.paid)
+                            }))
 
                         });
 
@@ -810,10 +884,7 @@ button {
 
         } catch (error) {
 
-            console.error(
-                "Errore caricamento dati:",
-                error
-            );
+            console.error("Errore caricamento dati:", error);
         }
     }
 
@@ -829,18 +900,14 @@ button {
 
         } catch (error) {
 
-            console.error(
-                "Errore salvataggio dati:",
-                error
-            );
+            console.error("Errore salvataggio dati:", error);
         }
     }
 
 
     function number(value) {
 
-        const n =
-            parseFloat(value);
+        const n = parseFloat(value);
 
         return Number.isFinite(n)
             ? n
@@ -857,19 +924,14 @@ button {
                 currency: "EUR"
             }
         ).format(
-            Number.isFinite(value)
-                ? value
-                : 0
+            Number.isFinite(value) ? value : 0
         );
     }
 
 
     function grams(value) {
 
-        const n =
-            Number.isFinite(value)
-                ? value
-                : 0;
+        const n = Number.isFinite(value) ? value : 0;
 
         return new Intl.NumberFormat(
             "it-IT",
@@ -882,9 +944,7 @@ button {
 
     function percentage(value) {
 
-        return value
-            .toFixed(1)
-            .replace(".", ",") + "%";
+        return value.toFixed(1).replace(".", ",") + "%";
     }
 
 
@@ -892,14 +952,9 @@ button {
 
         if (!date) return "";
 
-        const d =
-            new Date(date);
+        const d = new Date(date);
 
-        if (
-            Number.isNaN(
-                d.getTime()
-            )
-        ) {
+        if (Number.isNaN(d.getTime())) {
             return "";
         }
 
@@ -916,78 +971,45 @@ button {
 
     function getLoadStats(load) {
 
-        const initialQuantity =
-            number(
-                load.initialQuantity
-            );
+        const initialQuantity = number(load.initialQuantity);
+        const initialCost = number(load.initialCost);
 
-        const initialCost =
-            number(
-                load.initialCost
-            );
-
-        const sales =
-            Array.isArray(load.sales)
-                ? load.sales
-                : [];
-
+        const sales = Array.isArray(load.sales)
+            ? load.sales
+            : [];
 
         let soldQuantity = 0;
         let revenue = 0;
 
-
         sales.forEach(sale => {
 
-            soldQuantity +=
-                number(sale.quantity);
+            soldQuantity += number(sale.quantity);
+            revenue += number(sale.price);
 
-            revenue +=
-                number(sale.price);
         });
 
+        const remaining = Math.max(
+            0,
+            initialQuantity - soldQuantity
+        );
 
-        const remaining =
-            Math.max(
-                0,
-                initialQuantity -
-                soldQuantity
-            );
+        const costPerGram = initialQuantity > 0
+            ? initialCost / initialQuantity
+            : 0;
 
+        const averageSalePrice = soldQuantity > 0
+            ? revenue / soldQuantity
+            : 0;
 
-        const costPerGram =
-            initialQuantity > 0
-                ? initialCost /
-                  initialQuantity
-                : 0;
+        const soldCost = soldQuantity * costPerGram;
 
+        const profit = revenue - soldCost;
 
-        const averageSalePrice =
-            soldQuantity > 0
-                ? revenue /
-                  soldQuantity
-                : 0;
+        const margin = revenue > 0
+            ? (profit / revenue) * 100
+            : 0;
 
-
-        const soldCost =
-            soldQuantity *
-            costPerGram;
-
-
-        const profit =
-            revenue -
-            soldCost;
-
-
-        const margin =
-            revenue > 0
-                ? (profit / revenue) * 100
-                : 0;
-
-
-        const remainingValue =
-            remaining *
-            averageSalePrice;
-
+        const remainingValue = remaining * averageSalePrice;
 
         return {
             initialQuantity,
@@ -1015,59 +1037,33 @@ button {
         let remaining = 0;
         let remainingValue = 0;
 
-
         data.loads.forEach(load => {
 
-            const stats =
-                getLoadStats(load);
+            const stats = getLoadStats(load);
 
-            initialQuantity +=
-                stats.initialQuantity;
+            initialQuantity += stats.initialQuantity;
+            initialCost += stats.initialCost;
+            soldQuantity += stats.soldQuantity;
+            revenue += stats.revenue;
+            soldCost += stats.soldCost;
+            remaining += stats.remaining;
+            remainingValue += stats.remainingValue;
 
-            initialCost +=
-                stats.initialCost;
-
-            soldQuantity +=
-                stats.soldQuantity;
-
-            revenue +=
-                stats.revenue;
-
-            soldCost +=
-                stats.soldCost;
-
-            remaining +=
-                stats.remaining;
-
-            remainingValue +=
-                stats.remainingValue;
         });
 
+        const costPerGram = initialQuantity > 0
+            ? initialCost / initialQuantity
+            : 0;
 
-        const costPerGram =
-            initialQuantity > 0
-                ? initialCost /
-                  initialQuantity
-                : 0;
+        const averageSalePrice = soldQuantity > 0
+            ? revenue / soldQuantity
+            : 0;
 
+        const profit = revenue - soldCost;
 
-        const averageSalePrice =
-            soldQuantity > 0
-                ? revenue /
-                  soldQuantity
-                : 0;
-
-
-        const profit =
-            revenue -
-            soldCost;
-
-
-        const margin =
-            revenue > 0
-                ? (profit / revenue) * 100
-                : 0;
-
+        const margin = revenue > 0
+            ? (profit / revenue) * 100
+            : 0;
 
         return {
             initialQuantity,
@@ -1085,11 +1081,29 @@ button {
     }
 
 
+    function getUnpaidTotal() {
+
+        let total = 0;
+
+        data.loads.forEach(load => {
+
+            load.sales.forEach(sale => {
+
+                if (!sale.paid) {
+                    total += number(sale.price);
+                }
+
+            });
+
+        });
+
+        return total;
+    }
+
+
     function update() {
 
-        const stats =
-            getAggregateStats();
-
+        const stats = getAggregateStats();
 
         $("initialQuantity").textContent =
             grams(stats.initialQuantity);
@@ -1121,98 +1135,65 @@ button {
         $("margin").textContent =
             percentage(stats.margin);
 
-
         $("remainingValue").textContent =
             money(stats.remainingValue);
 
-
-        const progress =
-            stats.initialQuantity > 0
-                ? Math.min(
-                    100,
-                    Math.max(
-                        0,
-                        (
-                            stats.soldQuantity /
-                            stats.initialQuantity
-                        ) * 100
-                    )
+        const progress = stats.initialQuantity > 0
+            ? Math.min(
+                100,
+                Math.max(
+                    0,
+                    (stats.soldQuantity / stats.initialQuantity) * 100
                 )
-                : 0;
+            )
+            : 0;
 
-
-        $("progress").style.width =
-            progress + "%";
-
+        $("progress").style.width = progress + "%";
 
         $("progressText").textContent =
             percentage(progress);
 
-
         renderLoadSelector();
         renderLoadDetails();
         renderHistory();
+        renderCreditors();
     }
 
 
     function renderLoadSelector() {
 
-        const select =
-            $("saleLoad");
+        const select = $("saleLoad");
 
-        const currentValue =
-            select.value;
-
+        const currentValue = select.value;
 
         select.innerHTML =
             '<option value="">Seleziona carico</option>';
 
-
         data.loads.forEach(load => {
 
-            const stats =
-                getLoadStats(load);
+            const stats = getLoadStats(load);
 
+            const option = document.createElement("option");
 
-            const option =
-                document.createElement("option");
-
-
-            option.value =
-                load.id;
-
+            option.value = load.id;
 
             option.textContent =
-                load.name +
-                " — " +
-                grams(stats.remaining);
-
+                load.name + " — " + grams(stats.remaining);
 
             select.appendChild(option);
         });
 
-
-        if (
-            data.loads.some(
-                load =>
-                    load.id === currentValue
-            )
-        ) {
-
-            select.value =
-                currentValue;
+        if (data.loads.some(load => load.id === currentValue)) {
+            select.value = currentValue;
         }
     }
 
 
     function renderLoadDetails() {
 
-        const container =
-            $("loadDetails");
-
+        const container = $("loadDetails");
 
         container.innerHTML = "";
-
 
         if (!data.loads.length) {
 
@@ -1222,20 +1203,13 @@ button {
             return;
         }
 
-
         data.loads.forEach(load => {
 
-            const stats =
-                getLoadStats(load);
+            const stats = getLoadStats(load);
 
+            const card = document.createElement("div");
 
-            const card =
-                document.createElement("div");
-
-
-            card.className =
-                "load-card";
-
+            card.className = "load-card";
 
             card.innerHTML = `
 
@@ -1247,112 +1221,75 @@ button {
                         Caricato il ${formatDate(load.date)}
                     </div>
 
+                    ${editMode ? `
+                        <button
+                            class="edit-button"
+                            type="button"
+                            data-edit-load="${load.id}"
+                        >Modifica carico</button>
+                    ` : ""}
+
                 </div>
 
                 <div class="load-grid">
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Quantità iniziale
-                        </div>
-                        <div class="load-stat-value">
-                            ${grams(stats.initialQuantity)}
-                        </div>
+                        <div class="load-stat-label">Quantità iniziale</div>
+                        <div class="load-stat-value">${grams(stats.initialQuantity)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Quantità venduta
-                        </div>
-                        <div class="load-stat-value">
-                            ${grams(stats.soldQuantity)}
-                        </div>
+                        <div class="load-stat-label">Quantità venduta</div>
+                        <div class="load-stat-value">${grams(stats.soldQuantity)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Quantità rimanente
-                        </div>
-                        <div class="load-stat-value">
-                            ${grams(stats.remaining)}
-                        </div>
+                        <div class="load-stat-label">Quantità rimanente</div>
+                        <div class="load-stat-value">${grams(stats.remaining)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Costo iniziale
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(stats.initialCost)}
-                        </div>
+                        <div class="load-stat-label">Costo iniziale</div>
+                        <div class="load-stat-value">${money(stats.initialCost)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Costo / grammo
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(stats.costPerGram)}
-                        </div>
+                        <div class="load-stat-label">Costo / grammo</div>
+                        <div class="load-stat-value">${money(stats.costPerGram)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Ricavi
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(stats.revenue)}
-                        </div>
+                        <div class="load-stat-label">Ricavi</div>
+                        <div class="load-stat-value">${money(stats.revenue)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Prezzo medio vendita
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(stats.averageSalePrice)}
-                        </div>
+                        <div class="load-stat-label">Prezzo medio vendita</div>
+                        <div class="load-stat-value">${money(stats.averageSalePrice)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Costo venduto
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(stats.soldCost)}
-                        </div>
+                        <div class="load-stat-label">Costo venduto</div>
+                        <div class="load-stat-value">${money(stats.soldCost)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Guadagno lordo
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(stats.profit)}
-                        </div>
+                        <div class="load-stat-label">Guadagno lordo</div>
+                        <div class="load-stat-value">${money(stats.profit)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Margine
-                        </div>
-                        <div class="load-stat-value">
-                            ${percentage(stats.margin)}
-                        </div>
+                        <div class="load-stat-label">Margine</div>
+                        <div class="load-stat-value">${percentage(stats.margin)}</div>
                     </div>
 
                     <div class="load-stat">
-                        <div class="load-stat-label">
-                            Valore residuo
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(stats.remainingValue)}
-                        </div>
+                        <div class="load-stat-label">Valore residuo</div>
+                        <div class="load-stat-value">${money(stats.remainingValue)}</div>
                     </div>
 
                 </div>
             `;
-
 
             container.appendChild(card);
         });
@@ -1374,85 +1311,58 @@ button {
 
         const history = [];
 
-
         data.loads.forEach(load => {
 
             history.push({
 
-                type:
-                    "initial",
+                type: "initial",
 
-                id:
-                    load.id,
+                id: load.id,
 
-                name:
-                    load.name,
+                name: load.name,
 
-                quantity:
-                    number(
-                        load.initialQuantity
-                    ),
+                quantity: number(load.initialQuantity),
 
-                price:
-                    number(
-                        load.initialCost
-                    ),
+                price: number(load.initialCost),
 
-                date:
-                    load.date,
+                date: load.date,
 
-                load:
-                    load
+                load: load
 
             });
 
-
-            const sales =
-                Array.isArray(load.sales)
-                    ? load.sales
-                    : [];
-
+            const sales = Array.isArray(load.sales)
+                ? load.sales
+                : [];
 
             sales.forEach(sale => {
 
                 history.push({
 
-                    type:
-                        "sale",
+                    type: "sale",
 
-                    id:
-                        sale.id ||
-                        generateId(),
+                    id: sale.id || generateId(),
 
-                    loadId:
-                        load.id,
+                    loadId: load.id,
 
-                    name:
-                        load.name,
+                    name: load.name,
 
                     buyerName:
                         typeof sale.buyerName === "string"
                             ? sale.buyerName
                             : "",
 
-                    quantity:
-                        number(
-                            sale.quantity
-                        ),
+                    quantity: number(sale.quantity),
 
-                    price:
-                        number(
-                            sale.price
-                        ),
+                    price: number(sale.price),
 
-                    date:
-                        sale.date,
+                    date: sale.date,
 
-                    sale:
-                        sale,
+                    paid: Boolean(sale.paid),
 
-                    load:
-                        load
+                    sale: sale,
+
+                    load: load
 
                 });
 
@@ -1460,62 +1370,45 @@ button {
 
         });
 
+        return history.sort((a, b) => {
 
-        return history.sort(
-            (a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
 
-                const dateA =
-                    new Date(a.date).getTime();
-
-                const dateB =
-                    new Date(b.date).getTime();
-
-                return dateB - dateA;
-            }
-        );
+            return dateB - dateA;
+        });
     }
 
 
     function renderHistory() {
 
-        const container =
-            $("salesList");
-
+        const container = $("salesList");
 
         container.innerHTML = "";
 
-
-        const history =
-            getHistory();
-
+        const history = getHistory();
 
         if (!history.length) {
 
             container.innerHTML =
                 '<div class="empty">Nessun movimento registrato</div>';
 
+            $("historyTotal").innerHTML = "";
+
             return;
         }
 
-
         history.forEach(item => {
 
-            const row =
-                document.createElement("div");
+            const row = document.createElement("div");
 
-
-            row.className =
-                "history-entry";
-
+            row.className = "history-entry";
 
             if (item.type === "initial") {
 
-                const costPerGram =
-                    item.quantity > 0
-                        ? item.price /
-                          item.quantity
-                        : 0;
-
+                const costPerGram = item.quantity > 0
+                    ? item.price / item.quantity
+                    : 0;
 
                 row.innerHTML = `
 
@@ -1541,9 +1434,7 @@ button {
                         ${formatDate(item.date)}
                     </div>
 
-                    <div
-                        class="detail-popup hidden"
-                    >
+                    <div class="detail-popup hidden">
 
                         <div class="detail-popup-title">
                             Dati iniziali
@@ -1552,39 +1443,23 @@ button {
                         <div class="load-grid">
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Quantità
-                                </div>
-                                <div class="load-stat-value">
-                                    ${grams(item.quantity)}
-                                </div>
+                                <div class="load-stat-label">Quantità</div>
+                                <div class="load-stat-value">${grams(item.quantity)}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Costo totale
-                                </div>
-                                <div class="load-stat-value">
-                                    ${money(item.price)}
-                                </div>
+                                <div class="load-stat-label">Costo totale</div>
+                                <div class="load-stat-value">${money(item.price)}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Costo / grammo
-                                </div>
-                                <div class="load-stat-value">
-                                    ${money(costPerGram)}
-                                </div>
+                                <div class="load-stat-label">Costo / grammo</div>
+                                <div class="load-stat-value">${money(costPerGram)}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Data carico
-                                </div>
-                                <div class="load-stat-value">
-                                    ${formatDate(item.date)}
-                                </div>
+                                <div class="load-stat-label">Data carico</div>
+                                <div class="load-stat-value">${formatDate(item.date)}</div>
                             </div>
 
                         </div>
@@ -1594,18 +1469,13 @@ button {
 
             } else {
 
-                const pricePerGram =
-                    item.quantity > 0
-                        ? item.price /
-                          item.quantity
-                        : 0;
+                const pricePerGram = item.quantity > 0
+                    ? item.price / item.quantity
+                    : 0;
 
-
-                const buyerText =
-                    item.buyerName
-                        ? escapeHtml(item.buyerName)
-                        : "Acquirente non specificato";
-
+                const buyerText = item.buyerName
+                    ? escapeHtml(item.buyerName)
+                    : "Acquirente non specificato";
 
                 row.innerHTML = `
 
@@ -1627,13 +1497,28 @@ button {
                         ${money(pricePerGram)} / g
                     </div>
 
+                    ${!item.paid ? `
+                        <div class="owed">
+                            Da ricevere: ${money(item.price)}
+                        </div>
+                    ` : ""}
+
+                    <div class="paid-row">
+                        <input
+                            type="checkbox"
+                            class="paid-toggle"
+                            data-load-id="${item.loadId}"
+                            data-sale-id="${item.id}"
+                            ${item.paid ? "checked" : ""}
+                        >
+                        <span>Pagamento ricevuto</span>
+                    </div>
+
                     <div class="history-date">
                         ${formatDate(item.date)}
                     </div>
 
-                    <div
-                        class="detail-popup hidden"
-                    >
+                    <div class="detail-popup hidden">
 
                         <div class="detail-popup-title">
                             Dettagli vendita
@@ -1642,60 +1527,45 @@ button {
                         <div class="load-grid">
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Acquirente
-                                </div>
-                                <div class="load-stat-value">
-                                    ${buyerText}
-                                </div>
+                                <div class="load-stat-label">Acquirente</div>
+                                <div class="load-stat-value">${buyerText}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Carico
-                                </div>
-                                <div class="load-stat-value">
-                                    ${escapeHtml(item.name)}
-                                </div>
+                                <div class="load-stat-label">Carico</div>
+                                <div class="load-stat-value">${escapeHtml(item.name)}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Quantità
-                                </div>
-                                <div class="load-stat-value">
-                                    ${grams(item.quantity)}
-                                </div>
+                                <div class="load-stat-label">Quantità</div>
+                                <div class="load-stat-value">${grams(item.quantity)}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Incasso
-                                </div>
-                                <div class="load-stat-value">
-                                    ${money(item.price)}
-                                </div>
+                                <div class="load-stat-label">Incasso</div>
+                                <div class="load-stat-value">${money(item.price)}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Prezzo / grammo
-                                </div>
-                                <div class="load-stat-value">
-                                    ${money(pricePerGram)}
-                                </div>
+                                <div class="load-stat-label">Prezzo / grammo</div>
+                                <div class="load-stat-value">${money(pricePerGram)}</div>
                             </div>
 
                             <div class="load-stat">
-                                <div class="load-stat-label">
-                                    Data
-                                </div>
-                                <div class="load-stat-value">
-                                    ${formatDate(item.date)}
-                                </div>
+                                <div class="load-stat-label">Data</div>
+                                <div class="load-stat-value">${formatDate(item.date)}</div>
                             </div>
 
                         </div>
+
+                        ${editMode ? `
+                            <button
+                                class="edit-button"
+                                type="button"
+                                data-edit-sale-load="${item.loadId}"
+                                data-edit-sale-id="${item.id}"
+                            >Modifica vendita</button>
+                        ` : ""}
 
                         <button
                             class="delete-sale"
@@ -1710,48 +1580,359 @@ button {
                 `;
             }
 
-
             container.appendChild(row);
         });
+
+        const stats = getAggregateStats();
+
+        $("historyTotal").innerHTML = `
+            <div class="history-total">
+                Totale venduto: ${money(stats.revenue)}
+                <div style="color:#d00">
+                    Ancora da ricevere: ${money(getUnpaidTotal())}
+                </div>
+            </div>
+        `;
     }
+
+
+    function getCreditors() {
+
+        const creditors = {};
+
+        data.loads.forEach(load => {
+
+            load.sales.forEach(sale => {
+
+                if (sale.paid) return;
+
+                const name = String(sale.buyerName || "").trim();
+
+                if (!name) return;
+
+                const key = name.toLocaleLowerCase("it-IT");
+
+                if (!creditors[key]) {
+
+                    creditors[key] = {
+                        name: name,
+                        quantity: 0,
+                        debt: 0,
+                        totalQuantity: 0,
+                        totalRevenue: 0
+                    };
+                }
+
+                creditors[key].quantity += number(sale.quantity);
+                creditors[key].debt += number(sale.price);
+
+            });
+
+        });
+
+        /*
+         * Calcola anche quantità e ricavi complessivi
+         * della stessa persona, comprese le vendite pagate.
+         */
+        data.loads.forEach(load => {
+
+            load.sales.forEach(sale => {
+
+                const name = String(sale.buyerName || "").trim();
+
+                if (!name) return;
+
+                const key = name.toLocaleLowerCase("it-IT");
+
+                if (!creditors[key]) return;
+
+                creditors[key].totalQuantity += number(sale.quantity);
+                creditors[key].totalRevenue += number(sale.price);
+
+            });
+
+        });
+
+        return Object.values(creditors)
+            .sort((a, b) => a.name.localeCompare(b.name, "it"));
+    }
+
+
+    function renderCreditors() {
+
+        const container = $("creditorsList");
+
+        container.innerHTML = "";
+
+        const creditors = getCreditors();
+
+        if (!creditors.length) {
+
+            container.innerHTML =
+                '<div class="empty">Nessun credito da riscuotere.</div>';
+
+            return;
+        }
+
+        creditors.forEach(person => {
+
+            const average = person.totalQuantity > 0
+                ? person.totalRevenue / person.totalQuantity
+                : 0;
+
+            const card = document.createElement("div");
+
+            card.className = "creditor-card";
+
+            card.innerHTML = `
+
+                <div class="creditor-name">
+                    ${escapeHtml(person.name)}
+                </div>
+
+                <div class="load-grid">
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Quantità totale ceduta
+                        </div>
+                        <div class="load-stat-value">
+                            ${grams(person.totalQuantity)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Quantità ancora da pagare
+                        </div>
+                        <div class="load-stat-value">
+                            ${grams(person.quantity)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Prezzo medio / grammo
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(average)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Totale venduto
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(person.totalRevenue)}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="creditor-debt">
+                    Deve ancora: ${money(person.debt)}
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+    }
+
+
+    function editLoad(loadId) {
+
+        const load = data.loads.find(item => item.id === loadId);
+
+        if (!load) return;
+
+        const name = prompt("Nome del carico:", load.name);
+
+        if (name === null) return;
+
+        if (!name.trim()) {
+            alert("Inserisci un nome valido.");
+            return;
+        }
+
+        const quantityText = prompt(
+            "Quantità totale:",
+            load.initialQuantity
+        );
+
+        if (quantityText === null) return;
+
+        const quantity = number(quantityText);
+
+        if (quantity <= 0) {
+            alert("Inserisci una quantità valida.");
+            return;
+        }
+
+        const sold = getLoadStats(load).soldQuantity;
+
+        if (quantity < sold) {
+            alert("La quantità iniziale non può essere inferiore a quella già venduta.");
+            return;
+        }
+
+        const costText = prompt(
+            "Costo totale:",
+            load.initialCost
+        );
+
+        if (costText === null) return;
+
+        const cost = number(costText);
+
+        if (cost < 0 || !Number.isFinite(parseFloat(costText))) {
+            alert("Inserisci un costo valido.");
+            return;
+        }
+
+        load.name = name.trim();
+        load.initialQuantity = quantity;
+        load.initialCost = cost;
+
+        saveData();
+        update();
+    }
+
+
+    function editSale(loadId, saleId) {
+
+        const load = data.loads.find(item => item.id === loadId);
+
+        if (!load) return;
+
+        const sale = load.sales.find(item => item.id === saleId);
+
+        if (!sale) return;
+
+        const buyerName = prompt(
+            "Nome acquirente:",
+            sale.buyerName
+        );
+
+        if (buyerName === null) return;
+
+        if (!buyerName.trim()) {
+            alert("Inserisci un nome valido.");
+            return;
+        }
+
+        const quantityText = prompt(
+            "Quantità venduta:",
+            sale.quantity
+        );
+
+        if (quantityText === null) return;
+
+        const quantity = number(quantityText);
+
+        const available =
+            getLoadStats(load).remaining + number(sale.quantity);
+
+        if (quantity <= 0 || quantity > available) {
+            alert("Quantità non valida o superiore alla disponibilità.");
+            return;
+        }
+
+        const priceText = prompt(
+            "Prezzo incassato:",
+            sale.price
+        );
+
+        if (priceText === null) return;
+
+        const price = number(priceText);
+
+        if (price < 0 || !Number.isFinite(parseFloat(priceText))) {
+            alert("Inserisci un prezzo valido.");
+            return;
+        }
+
+        sale.buyerName = buyerName.trim();
+        sale.quantity = quantity;
+        sale.price = price;
+
+        saveData();
+        update();
+    }
+
+
+    $("settingsButton").addEventListener(
+        "click",
+        () => {
+            $("settingsMenu").classList.toggle("hidden");
+        }
+    );
+
+
+    $("editModeButton").addEventListener(
+        "click",
+        () => {
+
+            editMode = !editMode;
+
+            $("editModeButton").textContent =
+                editMode ? "Fine modifica" : "Modifica";
+
+            $("settingsMenu").classList.add("hidden");
+
+            update();
+        }
+    );
+
+
+    $("creditorsButton").addEventListener(
+        "click",
+        () => {
+
+            $("settingsMenu").classList.add("hidden");
+
+            $("creditorPanel").classList.remove("hidden");
+
+            renderCreditors();
+
+            $("creditorPanel").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    );
+
+
+    $("closeCreditors").addEventListener(
+        "click",
+        () => {
+            $("creditorPanel").classList.add("hidden");
+        }
+    );
 
 
     $("dashboardToggle").addEventListener(
         "click",
         () => {
 
-            const details =
-                $("loadDetails");
+            const details = $("loadDetails");
 
-            const chevron =
-                $("dashboardChevron");
-
+            const chevron = $("dashboardChevron");
 
             const isHidden =
-                details.classList.contains(
-                    "hidden"
-                );
-
+                details.classList.contains("hidden");
 
             if (isHidden) {
 
-                details.classList.remove(
-                    "hidden"
-                );
+                details.classList.remove("hidden");
 
-                chevron.classList.add(
-                    "open"
-                );
+                chevron.classList.add("open");
 
             } else {
 
-                details.classList.add(
-                    "hidden"
-                );
+                details.classList.add("hidden");
 
-                chevron.classList.remove(
-                    "open"
-                );
+                chevron.classList.remove("open");
             }
         }
     );
@@ -1761,82 +1942,53 @@ button {
         "click",
         () => {
 
-            const name =
-                $("initialName").value.trim();
+            const name = $("initialName").value.trim();
 
-            const quantity =
-                number(
-                    $("initialQty").value
-                );
+            const quantity = number($("initialQty").value);
 
-            const cost =
-                number(
-                    $("initialPrice").value
-                );
-
+            const cost = number($("initialPrice").value);
 
             if (!name) {
-
                 $("initialMessage").textContent =
                     "Inserisci un nome per il carico.";
-
                 return;
             }
-
 
             if (quantity <= 0) {
-
                 $("initialMessage").textContent =
                     "Inserisci una quantità valida.";
-
                 return;
             }
-
 
             if (cost < 0) {
-
                 $("initialMessage").textContent =
                     "Inserisci un costo valido.";
-
                 return;
             }
-
 
             const newLoad = {
 
-                id:
-                    generateId(),
+                id: generateId(),
 
-                name:
-                    name,
+                name: name,
 
-                initialQuantity:
-                    quantity,
+                initialQuantity: quantity,
 
-                initialCost:
-                    cost,
+                initialCost: cost,
 
-                date:
-                    new Date().toISOString(),
+                date: new Date().toISOString(),
 
-                sales:
-                    []
+                sales: []
             };
 
-
-            data.loads.push(
-                newLoad
-            );
-
+            data.loads.push(newLoad);
 
             saveData();
             update();
 
-
             $("initialName").value = "";
             $("initialQty").value = "";
             $("initialPrice").value = "";
-
 
             $("initialMessage").textContent =
                 "Carico iniziale salvato.";
@@ -1848,120 +2000,81 @@ button {
         "click",
         () => {
 
-            const loadId =
-                $("saleLoad").value;
+            const loadId = $("saleLoad").value;
 
-            const buyerName =
-                $("buyerName").value.trim();
+            const buyerName = $("buyerName").value.trim();
 
-            const quantity =
-                number(
-                    $("saleQty").value
-                );
+            const quantity = number($("saleQty").value);
 
-            const price =
-                number(
-                    $("salePrice").value
-                );
-
+            const price = number($("salePrice").value);
 
             if (!loadId) {
-
                 $("saleMessage").textContent =
                     "Seleziona un carico.";
-
                 return;
             }
-
 
             if (!buyerName) {
-
                 $("saleMessage").textContent =
                     "Inserisci il nome dell'acquirente.";
-
                 return;
             }
 
-
-            const load =
-                data.loads.find(
-                    item =>
-                        item.id === loadId
-                );
-
+            const load = data.loads.find(
+                item => item.id === loadId
+            );
 
             if (!load) {
-
                 $("saleMessage").textContent =
                     "Carico non trovato.";
-
                 return;
             }
 
-
-            const stats =
-                getLoadStats(load);
-
+            const stats = getLoadStats(load);
 
             if (quantity <= 0) {
-
                 $("saleMessage").textContent =
                     "Inserisci una quantità valida.";
-
                 return;
             }
-
 
             if (quantity > stats.remaining) {
-
                 $("saleMessage").textContent =
                     "La quantità supera quella disponibile nel carico.";
-
                 return;
             }
-
 
             if (price < 0) {
-
                 $("saleMessage").textContent =
                     "Inserisci un prezzo valido.";
-
                 return;
             }
-
 
             if (!Array.isArray(load.sales)) {
                 load.sales = [];
             }
 
-
             load.sales.push({
 
-                id:
-                    generateId(),
+                id: generateId(),
 
-                buyerName:
-                    buyerName,
+                buyerName: buyerName,
 
-                quantity:
-                    quantity,
+                quantity: quantity,
 
-                price:
-                    price,
+                price: price,
 
-                date:
-                    new Date().toISOString()
+                date: new Date().toISOString(),
+
+                paid: false
             });
-
 
             saveData();
             update();
 
-
             $("buyerName").value = "";
             $("saleQty").value = "";
             $("salePrice").value = "";
-
 
             $("saleMessage").textContent =
                 "Vendita aggiunta.";
@@ -1973,67 +2086,24 @@ button {
         "click",
         event => {
 
-            const entry =
-                event.target.closest(
-                    ".history-entry"
+            const paidToggle =
+                event.target.closest(".paid-toggle");
+
+            if (paidToggle) {
+
+                const load = data.loads.find(
+                    item => item.id === paidToggle.dataset.loadId
                 );
-
-
-            if (!entry) return;
-
-
-            const deleteButton =
-                event.target.closest(
-                    ".delete-sale"
-                );
-
-
-            if (deleteButton) {
-
-                event.stopPropagation();
-
-
-                const loadId =
-                    deleteButton.dataset.loadId;
-
-                const saleId =
-                    deleteButton.dataset.saleId;
-
-
-                const load =
-                    data.loads.find(
-                        item =>
-                            item.id === loadId
-                    );
-
 
                 if (!load) return;
 
-
-                const saleIndex =
-                    load.sales.findIndex(
-                        sale =>
-                            sale.id === saleId
-                    );
-
-
-                if (saleIndex < 0) return;
-
-
-                const confirmed =
-                    confirm(
-                        "Vuoi eliminare questa vendita?"
-                    );
-
-
-                if (!confirmed) return;
-
-
-                load.sales.splice(
-                    saleIndex,
-                    1
+                const sale = load.sales.find(
+                    item => item.id === paidToggle.dataset.saleId
                 );
 
+                if (!sale) return;
+
+                sale.paid = paidToggle.checked;
 
                 saveData();
                 update();
@@ -2042,18 +2112,83 @@ button {
             }
 
 
-            const detail =
-                entry.querySelector(
-                    ".detail-popup"
+            const editButton =
+                event.target.closest("[data-edit-sale-id]");
+
+            if (editButton) {
+
+                event.stopPropagation();
+
+                editSale(
+                    editButton.dataset.editSaleLoad,
+                    editButton.dataset.editSaleId
                 );
 
+                return;
+            }
+
+
+            const deleteButton =
+                event.target.closest(".delete-sale");
+
+            if (deleteButton) {
+
+                event.stopPropagation();
+
+                const loadId = deleteButton.dataset.loadId;
+
+                const saleId = deleteButton.dataset.saleId;
+
+                const load = data.loads.find(
+                    item => item.id === loadId
+                );
+
+                if (!load) return;
+
+                const saleIndex = load.sales.findIndex(
+                    sale => sale.id === saleId
+                );
+
+                if (saleIndex < 0) return;
+
+                const confirmed = confirm(
+                    "Vuoi eliminare questa vendita?"
+                );
+
+                if (!confirmed) return;
+
+                load.sales.splice(saleIndex, 1);
+
+                saveData();
+                update();
+
+                return;
+            }
+
+
+            const entry = event.target.closest(".history-entry");
+
+            if (!entry) return;
+
+            const detail = entry.querySelector(".detail-popup");
 
             if (!detail) return;
 
+            detail.classList.toggle("hidden");
+        }
+    );
 
-            detail.classList.toggle(
-                "hidden"
-            );
+
+    $("loadDetails").addEventListener(
+        "click",
+        event => {
+
+            const editButton =
+                event.target.closest("[data-edit-load]");
+
+            if (!editButton) return;
+
+            editLoad(editButton.dataset.editLoad);
         }
     );
 
@@ -2062,22 +2197,17 @@ button {
         "click",
         () => {
 
-            const confirmed =
-                confirm(
-                    "Vuoi cancellare TUTTI i dati? Questa operazione non può essere annullata."
-                );
-
+            const confirmed = confirm(
+                "Vuoi cancellare TUTTI i dati? Questa operazione non può essere annullata."
+            );
 
             if (!confirmed) return;
-
 
             data = {
                 loads: []
             };
 
-
             saveData();
-
 
             $("initialName").value = "";
             $("initialQty").value = "";
@@ -2087,24 +2217,21 @@ button {
             $("saleQty").value = "";
             $("salePrice").value = "";
 
+            $("initialMessage").textContent = "";
+            $("saleMessage").textContent = "";
 
-            $("initialMessage").textContent =
-                "";
+            $("creditorPanel").classList.add("hidden");
+            $("settingsMenu").classList.add("hidden");
 
-            $("saleMessage").textContent =
-                "";
+            editMode = false;
 
+            $("editModeButton").textContent = "Modifica";
 
             update();
 
+            $("loadDetails").classList.add("hidden");
 
-            $("loadDetails").classList.add(
-                "hidden"
-            );
-
-            $("dashboardChevron").classList.remove(
-                "open"
-            );
+            $("dashboardChevron").classList.remove("open");
         }
     );
 
