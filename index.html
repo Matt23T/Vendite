@@ -24,48 +24,6 @@ body {
     padding: 20px 16px 40px;
 }
 
-.topbar {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 12px;
-    position: relative;
-}
-
-.settings-button {
-    width: 44px;
-    min-height: 44px;
-    margin: 0;
-    border-radius: 14px;
-    background: white;
-    font-size: 23px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.05);
-}
-
-.settings-menu {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    z-index: 10;
-    width: 190px;
-    padding: 7px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,.15);
-}
-
-.settings-menu button {
-    margin: 0;
-    min-height: 44px;
-    background: white;
-    text-align: left;
-    padding: 0 12px;
-    font-size: 15px;
-}
-
-.settings-menu button + button {
-    border-top: 1px solid #eee;
-}
-
 .card {
     background: white;
     border-radius: 20px;
@@ -262,13 +220,20 @@ button {
 .load-name {
     font-size: 17px;
     font-weight: 750;
-    margin-bottom: 12px;
+}
+
+.load-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
 }
 
 .load-date {
     font-size: 12px;
     color: #888;
-    margin-top: 3px;
+    font-weight: 400;
+    white-space: nowrap;
 }
 
 .load-grid {
@@ -368,19 +333,30 @@ button {
 .edit-button {
     width: auto;
     min-height: 36px;
-    margin: 10px 6px 0 0;
+    margin: 10px 0;
     padding: 0 13px;
     background: #e8e8ed;
     color: #111;
     font-size: 13px;
 }
 
+.edit-fields {
+    background: white;
+    border-radius: 13px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+.edit-fields button {
+    margin-top: 10px;
+}
+
 .paid-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-    font-size: 13px;
+    gap: 9px;
+    margin-top: 12px;
+    font-size: 14px;
     color: #555;
 }
 
@@ -393,9 +369,9 @@ button {
 
 .owed {
     color: #d00;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    margin-top: 4px;
+    margin-top: 5px;
 }
 
 .history-total {
@@ -405,17 +381,20 @@ button {
     margin-top: 12px;
     font-size: 14px;
     font-weight: 700;
-    line-height: 1.7;
 }
 
-.creditor-card {
+.history-total span {
+    color: #d00;
+}
+
+.client-card {
     background: #f7f7fa;
     border-radius: 15px;
     padding: 15px;
     margin-bottom: 10px;
 }
 
-.creditor-name {
+.client-name {
     font-size: 17px;
     font-weight: 750;
     margin-bottom: 10px;
@@ -426,13 +405,6 @@ button {
     font-size: 20px;
     font-weight: 800;
     margin-top: 10px;
-}
-
-.edit-mode {
-    color: #3978e8;
-    font-size: 12px;
-    font-weight: 700;
-    margin-top: 3px;
 }
 
 @media (max-width: 380px) {
@@ -448,31 +420,6 @@ button {
 
 <div class="app">
 
-    <!-- IMPOSTAZIONI -->
-    <div class="topbar">
-
-        <button
-            class="settings-button"
-            id="settingsButton"
-            type="button"
-        >⚙️</button>
-
-        <div
-            class="settings-menu hidden"
-            id="settingsMenu"
-        >
-            <button id="editModeButton" type="button">
-                Modifica
-            </button>
-
-            <button id="creditorsButton" type="button">
-                Lista creditori
-            </button>
-        </div>
-
-    </div>
-
-
     <!-- SITUAZIONE ATTUALE -->
     <div class="card">
 
@@ -484,10 +431,7 @@ button {
                 Situazione attuale
             </div>
 
-            <div
-                class="chevron"
-                id="dashboardChevron"
-            >
+            <div class="chevron" id="dashboardChevron">
                 ▼
             </div>
         </div>
@@ -546,10 +490,7 @@ button {
 
             </div>
 
-            <div
-                class="load-details hidden"
-                id="loadDetails"
-            ></div>
+            <div class="load-details hidden" id="loadDetails"></div>
 
         </div>
 
@@ -574,7 +515,7 @@ button {
         <input
             id="buyerName"
             type="text"
-            placeholder="Es. Mario"
+            placeholder="Es. Mario Rossi"
             maxlength="80"
         >
 
@@ -599,6 +540,13 @@ button {
             step="0.01"
             placeholder="Es. 35"
         >
+
+        <div class="paid-row">
+            <input type="checkbox" id="salePaid">
+            <label for="salePaid" style="margin:0">
+                Già pagata
+            </label>
+        </div>
 
         <button class="primary" id="addSale">
             Aggiungi vendita
@@ -674,22 +622,30 @@ button {
     </div>
 
 
-    <!-- CREDITORI -->
-    <div class="card hidden" id="creditorPanel">
+    <!-- LISTA CLIENTI -->
+    <div class="card">
 
-        <div class="dashboard-header">
-            <div class="card-title">
-                Lista creditori
-            </div>
-
-            <div
-                class="clickable"
-                id="closeCreditors"
-                style="font-size:22px;color:#888"
-            >✕</div>
+        <div class="card-title">
+            Lista clienti
         </div>
 
-        <div id="creditorsList"></div>
+        <div id="clientsList">
+            <div class="empty">Nessun cliente presente</div>
+        </div>
+
+    </div>
+
+
+    <!-- LISTA CREDITORI -->
+    <div class="card">
+
+        <div class="card-title">
+            Lista creditori
+        </div>
+
+        <div id="creditorsList">
+            <div class="empty">Nessun credito da riscuotere</div>
+        </div>
 
     </div>
 
@@ -707,26 +663,40 @@ button {
                 <div class="stat-label">
                     Costo della quantità venduta
                 </div>
-                <div class="stat-value" id="soldCost">€0,00</div>
+
+                <div class="stat-value" id="soldCost">
+                    €0,00
+                </div>
             </div>
 
             <div class="stat">
                 <div class="stat-label">
                     Guadagno lordo
                 </div>
-                <div class="stat-value" id="profit">€0,00</div>
+
+                <div class="stat-value" id="profit">
+                    €0,00
+                </div>
             </div>
 
             <div class="stat">
-                <div class="stat-label">Margine</div>
-                <div class="stat-value" id="margin">0%</div>
+                <div class="stat-label">
+                    Margine
+                </div>
+
+                <div class="stat-value" id="margin">
+                    0%
+                </div>
             </div>
 
             <div class="stat">
                 <div class="stat-label">
                     Valore stimato residuo
                 </div>
-                <div class="stat-value" id="remainingValue">€0,00</div>
+
+                <div class="stat-value" id="remainingValue">
+                    €0,00
+                </div>
             </div>
 
         </div>
@@ -750,7 +720,7 @@ button {
         loads: []
     };
 
-    let editMode = false;
+    let editingLoadId = null;
 
     const $ = id =>
         document.getElementById(id);
@@ -814,6 +784,7 @@ button {
 
                     });
 
+                    saveData();
                     return;
                 }
 
@@ -872,6 +843,7 @@ button {
                                 date: sale.date || new Date().toISOString(),
 
                                 paid: Boolean(sale.paid)
+
                             }))
 
                         });
@@ -971,12 +943,16 @@ button {
 
     function getLoadStats(load) {
 
-        const initialQuantity = number(load.initialQuantity);
-        const initialCost = number(load.initialCost);
+        const initialQuantity =
+            number(load.initialQuantity);
 
-        const sales = Array.isArray(load.sales)
-            ? load.sales
-            : [];
+        const initialCost =
+            number(load.initialCost);
+
+        const sales =
+            Array.isArray(load.sales)
+                ? load.sales
+                : [];
 
         let soldQuantity = 0;
         let revenue = 0;
@@ -1156,6 +1132,7 @@ button {
         renderLoadSelector();
         renderLoadDetails();
         renderHistory();
+        renderClients();
         renderCreditors();
     }
 
@@ -1211,27 +1188,23 @@ button {
 
             card.className = "load-card";
 
+            const isEditing = editingLoadId === load.id;
+
             card.innerHTML = `
 
-                <div class="load-name">
+                <div class="load-heading">
 
-                    ${escapeHtml(load.name)}
-
-                    <div class="load-date">
-                        Caricato il ${formatDate(load.date)}
+                    <div class="load-name">
+                        ${escapeHtml(load.name)}
                     </div>
 
-                    ${editMode ? `
-                        <button
-                            class="edit-button"
-                            type="button"
-                            data-edit-load="${load.id}"
-                        >Modifica carico</button>
-                    ` : ""}
+                    <div class="load-date">
+                        ${formatDate(load.date)}
+                    </div>
 
                 </div>
 
-                <div class="load-grid">
+                <div class="load-grid" style="margin-top:12px">
 
                     <div class="load-stat">
                         <div class="load-stat-label">Quantità iniziale</div>
@@ -1289,6 +1262,64 @@ button {
                     </div>
 
                 </div>
+
+                ${isEditing ? `
+
+                    <div class="edit-fields">
+
+                        <div class="card-title" style="font-size:15px;margin-bottom:8px">
+                            Modifica carico
+                        </div>
+
+                        <label>Nome</label>
+                        <input
+                            type="text"
+                            data-load-field="name"
+                            value="${escapeHtml(load.name)}"
+                        >
+
+                        <label>Quantità totale</label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            data-load-field="quantity"
+                            value="${load.initialQuantity}"
+                        >
+
+                        <label>Costo totale</label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            data-load-field="cost"
+                            value="${load.initialCost}"
+                        >
+
+                        <button
+                            class="primary"
+                            type="button"
+                            data-save-load="${load.id}"
+                        >Salva modifiche</button>
+
+                        <button
+                            class="secondary"
+                            type="button"
+                            data-cancel-load="${load.id}"
+                        >Annulla</button>
+
+                    </div>
+
+                ` : `
+
+                    <button
+                        class="edit-button"
+                        type="button"
+                        data-edit-load="${load.id}"
+                    >Modifica</button>
+
+                `}
+
             `;
 
             container.appendChild(card);
@@ -1341,7 +1372,7 @@ button {
 
                     type: "sale",
 
-                    id: sale.id || generateId(),
+                    id: sale.id,
 
                     loadId: load.id,
 
@@ -1503,17 +1534,6 @@ button {
                         </div>
                     ` : ""}
 
-                    <div class="paid-row">
-                        <input
-                            type="checkbox"
-                            class="paid-toggle"
-                            data-load-id="${item.loadId}"
-                            data-sale-id="${item.id}"
-                            ${item.paid ? "checked" : ""}
-                        >
-                        <span>Pagamento ricevuto</span>
-                    </div>
-
                     <div class="history-date">
                         ${formatDate(item.date)}
                     </div>
@@ -1552,29 +1572,32 @@ button {
                             </div>
 
                             <div class="load-stat">
+                                <div class="load-stat-label">Pagamento</div>
+                                <div class="load-stat-value">
+                                    ${item.paid ? "Pagata" : "Da ricevere"}
+                                </div>
+                            </div>
+
+                            <div class="load-stat">
                                 <div class="load-stat-label">Data</div>
                                 <div class="load-stat-value">${formatDate(item.date)}</div>
                             </div>
 
                         </div>
 
-                        ${editMode ? `
-                            <button
-                                class="edit-button"
-                                type="button"
-                                data-edit-sale-load="${item.loadId}"
-                                data-edit-sale-id="${item.id}"
-                            >Modifica vendita</button>
-                        ` : ""}
+                        <button
+                            class="edit-button"
+                            type="button"
+                            data-edit-sale-load="${item.loadId}"
+                            data-edit-sale-id="${item.id}"
+                        >Modifica vendita</button>
 
                         <button
                             class="delete-sale"
                             type="button"
                             data-load-id="${item.loadId}"
                             data-sale-id="${item.id}"
-                        >
-                            Elimina vendita
-                        </button>
+                        >Elimina vendita</button>
 
                     </div>
                 `;
@@ -1588,11 +1611,129 @@ button {
         $("historyTotal").innerHTML = `
             <div class="history-total">
                 Totale venduto: ${money(stats.revenue)}
-                <div style="color:#d00">
-                    Ancora da ricevere: ${money(getUnpaidTotal())}
-                </div>
+                <span>(${money(getUnpaidTotal())} da ricevere)</span>
             </div>
         `;
+    }
+
+
+    function getClientData() {
+
+        const clients = {};
+
+        data.loads.forEach(load => {
+
+            load.sales.forEach(sale => {
+
+                const name = String(sale.buyerName || "").trim();
+
+                if (!name) return;
+
+                const key = name
+                    .replace(/\s+/g, " ")
+                    .toLocaleLowerCase("it-IT");
+
+                if (!clients[key]) {
+
+                    clients[key] = {
+                        name: name,
+                        quantity: 0,
+                        revenue: 0,
+                        collected: 0
+                    };
+                }
+
+                clients[key].quantity += number(sale.quantity);
+                clients[key].revenue += number(sale.price);
+
+                if (sale.paid) {
+                    clients[key].collected += number(sale.price);
+                }
+
+            });
+
+        });
+
+        return Object.values(clients)
+            .sort((a, b) => a.name.localeCompare(b.name, "it"));
+    }
+
+
+    function renderClients() {
+
+        const container = $("clientsList");
+
+        container.innerHTML = "";
+
+        const clients = getClientData();
+
+        if (!clients.length) {
+
+            container.innerHTML =
+                '<div class="empty">Nessun cliente presente</div>';
+
+            return;
+        }
+
+        clients.forEach(client => {
+
+            const average = client.quantity > 0
+                ? client.revenue / client.quantity
+                : 0;
+
+            const card = document.createElement("div");
+
+            card.className = "client-card";
+
+            card.innerHTML = `
+
+                <div class="client-name">
+                    ${escapeHtml(client.name)}
+                </div>
+
+                <div class="load-grid">
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Quantità venduta
+                        </div>
+                        <div class="load-stat-value">
+                            ${grams(client.quantity)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Prezzo medio / grammo
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(average)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Totale venduto
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(client.revenue)}
+                        </div>
+                    </div>
+
+                    <div class="load-stat">
+                        <div class="load-stat-label">
+                            Denaro incassato
+                        </div>
+                        <div class="load-stat-value">
+                            ${money(client.collected)}
+                        </div>
+                    </div>
+
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
     }
 
 
@@ -1610,44 +1751,19 @@ button {
 
                 if (!name) return;
 
-                const key = name.toLocaleLowerCase("it-IT");
+                const key = name
+                    .replace(/\s+/g, " ")
+                    .toLocaleLowerCase("it-IT");
 
                 if (!creditors[key]) {
 
                     creditors[key] = {
                         name: name,
-                        quantity: 0,
-                        debt: 0,
-                        totalQuantity: 0,
-                        totalRevenue: 0
+                        debt: 0
                     };
                 }
 
-                creditors[key].quantity += number(sale.quantity);
                 creditors[key].debt += number(sale.price);
-
-            });
-
-        });
-
-        /*
-         * Calcola anche quantità e ricavi complessivi
-         * della stessa persona, comprese le vendite pagate.
-         */
-        data.loads.forEach(load => {
-
-            load.sales.forEach(sale => {
-
-                const name = String(sale.buyerName || "").trim();
-
-                if (!name) return;
-
-                const key = name.toLocaleLowerCase("it-IT");
-
-                if (!creditors[key]) return;
-
-                creditors[key].totalQuantity += number(sale.quantity);
-                creditors[key].totalRevenue += number(sale.price);
 
             });
 
@@ -1669,65 +1785,21 @@ button {
         if (!creditors.length) {
 
             container.innerHTML =
-                '<div class="empty">Nessun credito da riscuotere.</div>';
+                '<div class="empty">Nessun credito da riscuotere</div>';
 
             return;
         }
 
         creditors.forEach(person => {
 
-            const average = person.totalQuantity > 0
-                ? person.totalRevenue / person.totalQuantity
-                : 0;
-
             const card = document.createElement("div");
 
-            card.className = "creditor-card";
+            card.className = "client-card";
 
             card.innerHTML = `
 
-                <div class="creditor-name">
+                <div class="client-name">
                     ${escapeHtml(person.name)}
-                </div>
-
-                <div class="load-grid">
-
-                    <div class="load-stat">
-                        <div class="load-stat-label">
-                            Quantità totale ceduta
-                        </div>
-                        <div class="load-stat-value">
-                            ${grams(person.totalQuantity)}
-                        </div>
-                    </div>
-
-                    <div class="load-stat">
-                        <div class="load-stat-label">
-                            Quantità ancora da pagare
-                        </div>
-                        <div class="load-stat-value">
-                            ${grams(person.quantity)}
-                        </div>
-                    </div>
-
-                    <div class="load-stat">
-                        <div class="load-stat-label">
-                            Prezzo medio / grammo
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(average)}
-                        </div>
-                    </div>
-
-                    <div class="load-stat">
-                        <div class="load-stat-label">
-                            Totale venduto
-                        </div>
-                        <div class="load-stat-value">
-                            ${money(person.totalRevenue)}
-                        </div>
-                    </div>
-
                 </div>
 
                 <div class="creditor-debt">
@@ -1737,65 +1809,6 @@ button {
 
             container.appendChild(card);
         });
-    }
-
-
-    function editLoad(loadId) {
-
-        const load = data.loads.find(item => item.id === loadId);
-
-        if (!load) return;
-
-        const name = prompt("Nome del carico:", load.name);
-
-        if (name === null) return;
-
-        if (!name.trim()) {
-            alert("Inserisci un nome valido.");
-            return;
-        }
-
-        const quantityText = prompt(
-            "Quantità totale:",
-            load.initialQuantity
-        );
-
-        if (quantityText === null) return;
-
-        const quantity = number(quantityText);
-
-        if (quantity <= 0) {
-            alert("Inserisci una quantità valida.");
-            return;
-        }
-
-        const sold = getLoadStats(load).soldQuantity;
-
-        if (quantity < sold) {
-            alert("La quantità iniziale non può essere inferiore a quella già venduta.");
-            return;
-        }
-
-        const costText = prompt(
-            "Costo totale:",
-            load.initialCost
-        );
-
-        if (costText === null) return;
-
-        const cost = number(costText);
-
-        if (cost < 0 || !Number.isFinite(parseFloat(costText))) {
-            alert("Inserisci un costo valido.");
-            return;
-        }
-
-        load.name = name.trim();
-        load.initialQuantity = quantity;
-        load.initialCost = cost;
-
-        saveData();
-        update();
     }
 
 
@@ -1833,7 +1846,10 @@ button {
         const available =
             getLoadStats(load).remaining + number(sale.quantity);
 
-        if (quantity <= 0 || quantity > available) {
+        if (
+            quantity <= 0 ||
+            quantity > available
+        ) {
             alert("Quantità non valida o superiore alla disponibilità.");
             return;
         }
@@ -1847,68 +1863,26 @@ button {
 
         const price = number(priceText);
 
-        if (price < 0 || !Number.isFinite(parseFloat(priceText))) {
+        if (
+            price < 0 ||
+            !Number.isFinite(parseFloat(priceText))
+        ) {
             alert("Inserisci un prezzo valido.");
             return;
         }
 
+        const paid = confirm(
+            "La vendita è già stata pagata?\n\nOK = Sì\nAnnulla = No"
+        );
+
         sale.buyerName = buyerName.trim();
         sale.quantity = quantity;
         sale.price = price;
+        sale.paid = paid;
 
         saveData();
         update();
     }
-
-
-    $("settingsButton").addEventListener(
-        "click",
-        () => {
-            $("settingsMenu").classList.toggle("hidden");
-        }
-    );
-
-
-    $("editModeButton").addEventListener(
-        "click",
-        () => {
-
-            editMode = !editMode;
-
-            $("editModeButton").textContent =
-                editMode ? "Fine modifica" : "Modifica";
-
-            $("settingsMenu").classList.add("hidden");
-
-            update();
-        }
-    );
-
-
-    $("creditorsButton").addEventListener(
-        "click",
-        () => {
-
-            $("settingsMenu").classList.add("hidden");
-
-            $("creditorPanel").classList.remove("hidden");
-
-            renderCreditors();
-
-            $("creditorPanel").scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-        }
-    );
-
-
-    $("closeCreditors").addEventListener(
-        "click",
-        () => {
-            $("creditorPanel").classList.add("hidden");
-        }
-    );
 
 
     $("dashboardToggle").addEventListener(
@@ -1938,6 +1912,111 @@ button {
     );
 
 
+    $("loadDetails").addEventListener(
+        "click",
+        event => {
+
+            const editButton =
+                event.target.closest("[data-edit-load]");
+
+            const saveButton =
+                event.target.closest("[data-save-load]");
+
+            const cancelButton =
+                event.target.closest("[data-cancel-load]");
+
+
+            if (editButton) {
+
+                editingLoadId = editButton.dataset.editLoad;
+
+                renderLoadDetails();
+
+                return;
+            }
+
+
+            if (cancelButton) {
+
+                editingLoadId = null;
+
+                renderLoadDetails();
+
+                return;
+            }
+
+
+            if (saveButton) {
+
+                const loadId = saveButton.dataset.saveLoad;
+
+                const load = data.loads.find(
+                    item => item.id === loadId
+                );
+
+                if (!load) return;
+
+                const card = saveButton.closest(".load-card");
+
+                const name = card.querySelector(
+                    '[data-load-field="name"]'
+                ).value.trim();
+
+                const quantityText = card.querySelector(
+                    '[data-load-field="quantity"]'
+                ).value;
+
+                const costText = card.querySelector(
+                    '[data-load-field="cost"]'
+                ).value;
+
+                const quantity = number(quantityText);
+
+                const cost = number(costText);
+
+                if (!name) {
+                    alert("Inserisci un nome valido.");
+                    return;
+                }
+
+                if (
+                    quantity <= 0 ||
+                    !Number.isFinite(parseFloat(quantityText))
+                ) {
+                    alert("Inserisci una quantità valida.");
+                    return;
+                }
+
+                if (
+                    quantity < getLoadStats(load).soldQuantity
+                ) {
+                    alert("La quantità iniziale non può essere inferiore a quella già venduta.");
+                    return;
+                }
+
+                if (
+                    cost < 0 ||
+                    !Number.isFinite(parseFloat(costText))
+                ) {
+                    alert("Inserisci un costo valido.");
+                    return;
+                }
+
+                load.name = name;
+                load.initialQuantity = quantity;
+                load.initialCost = cost;
+
+                editingLoadId = null;
+
+                saveData();
+                update();
+
+                return;
+            }
+        }
+    );
+
+
     $("saveInitial").addEventListener(
         "click",
         () => {
@@ -1949,20 +2028,26 @@ button {
             const cost = number($("initialPrice").value);
 
             if (!name) {
+
                 $("initialMessage").textContent =
                     "Inserisci un nome per il carico.";
+
                 return;
             }
 
             if (quantity <= 0) {
+
                 $("initialMessage").textContent =
                     "Inserisci una quantità valida.";
+
                 return;
             }
 
             if (cost < 0) {
+
                 $("initialMessage").textContent =
                     "Inserisci un costo valido.";
+
                 return;
             }
 
@@ -2008,15 +2093,21 @@ button {
 
             const price = number($("salePrice").value);
 
+            const paid = $("salePaid").checked;
+
             if (!loadId) {
+
                 $("saleMessage").textContent =
                     "Seleziona un carico.";
+
                 return;
             }
 
             if (!buyerName) {
+
                 $("saleMessage").textContent =
                     "Inserisci il nome dell'acquirente.";
+
                 return;
             }
 
@@ -2025,28 +2116,36 @@ button {
             );
 
             if (!load) {
+
                 $("saleMessage").textContent =
                     "Carico non trovato.";
+
                 return;
             }
 
             const stats = getLoadStats(load);
 
             if (quantity <= 0) {
+
                 $("saleMessage").textContent =
                     "Inserisci una quantità valida.";
+
                 return;
             }
 
             if (quantity > stats.remaining) {
+
                 $("saleMessage").textContent =
                     "La quantità supera quella disponibile nel carico.";
+
                 return;
             }
 
             if (price < 0) {
+
                 $("saleMessage").textContent =
                     "Inserisci un prezzo valido.";
+
                 return;
             }
 
@@ -2066,7 +2165,7 @@ button {
 
                 date: new Date().toISOString(),
 
-                paid: false
+                paid: paid
             });
 
             saveData();
@@ -2075,6 +2174,7 @@ button {
             $("buyerName").value = "";
             $("saleQty").value = "";
             $("salePrice").value = "";
+            $("salePaid").checked = false;
 
             $("saleMessage").textContent =
                 "Vendita aggiunta.";
@@ -2085,32 +2185,6 @@ button {
     $("salesList").addEventListener(
         "click",
         event => {
-
-            const paidToggle =
-                event.target.closest(".paid-toggle");
-
-            if (paidToggle) {
-
-                const load = data.loads.find(
-                    item => item.id === paidToggle.dataset.loadId
-                );
-
-                if (!load) return;
-
-                const sale = load.sales.find(
-                    item => item.id === paidToggle.dataset.saleId
-                );
-
-                if (!sale) return;
-
-                sale.paid = paidToggle.checked;
-
-                saveData();
-                update();
-
-                return;
-            }
-
 
             const editButton =
                 event.target.closest("[data-edit-sale-id]");
@@ -2126,7 +2200,6 @@ button {
 
                 return;
             }
-
 
             const deleteButton =
                 event.target.closest(".delete-sale");
@@ -2165,7 +2238,6 @@ button {
                 return;
             }
 
-
             const entry = event.target.closest(".history-entry");
 
             if (!entry) return;
@@ -2175,20 +2247,6 @@ button {
             if (!detail) return;
 
             detail.classList.toggle("hidden");
-        }
-    );
-
-
-    $("loadDetails").addEventListener(
-        "click",
-        event => {
-
-            const editButton =
-                event.target.closest("[data-edit-load]");
-
-            if (!editButton) return;
-
-            editLoad(editButton.dataset.editLoad);
         }
     );
 
@@ -2207,6 +2265,8 @@ button {
                 loads: []
             };
 
+            editingLoadId = null;
+
             saveData();
 
             $("initialName").value = "";
@@ -2216,16 +2276,10 @@ button {
             $("buyerName").value = "";
             $("saleQty").value = "";
             $("salePrice").value = "";
+            $("salePaid").checked = false;
 
             $("initialMessage").textContent = "";
             $("saleMessage").textContent = "";
-
-            $("creditorPanel").classList.add("hidden");
-            $("settingsMenu").classList.add("hidden");
-
-            editMode = false;
-
-            $("editModeButton").textContent = "Modifica";
 
             update();
 
